@@ -53,7 +53,11 @@
         {% render 'icon-account' %}
       </a>
 
-      <a href="{{ routes.cart_url }}" class="nestwell-header__icon-btn nestwell-header__icon-btn--cart" aria-label="Cart">
+      <a
+        href="{{ routes.cart_url }}"
+        class="nestwell-header__icon-btn nestwell-header__icon-btn--cart"
+        aria-label="Cart"
+      >
         {% render 'icon-cart' %}
         <span class="nestwell-header__cart-count" data-cart-count>{{ cart.item_count }}</span>
       </a>
@@ -262,6 +266,10 @@
     z-index: 60;
   }
 
+  .nestwell-header__overlay[hidden] {
+    display: none;
+  }
+
   .nestwell-header__drawer {
     position: fixed;
     top: 0;
@@ -277,6 +285,10 @@
     transform: translateY(-100%);
     transition: transform 0.3s ease;
     overflow-y: auto;
+  }
+
+  .nestwell-header__drawer[hidden] {
+    display: none;
   }
 
   .nestwell-header__drawer:not([hidden]) {
@@ -384,7 +396,6 @@
       handleScroll();
     }
 
-    // Mobile drawer — delegated listeners, no stale element references
     function getFocusable() {
       return drawer ? drawer.querySelectorAll('a[href], button:not([disabled])') : [];
     }
@@ -413,10 +424,7 @@
     document.addEventListener('click', (event) => {
       if (event.target.closest('.nestwell-header__menu-btn')) {
         openDrawer();
-      } else if (
-        event.target.closest('[data-drawer-close]') ||
-        event.target.closest('[data-drawer-overlay]')
-      ) {
+      } else if (event.target.closest('[data-drawer-close]') || event.target.closest('[data-drawer-overlay]')) {
         closeDrawer();
       }
     });
@@ -458,10 +466,6 @@
     desktopQuery.addEventListener('change', handleBreakpointChange);
     handleBreakpointChange(desktopQuery);
 
-    // Cart badge sync. Fires on a custom 'cart:updated' event —
-    // your add-to-cart JS (product page, quick-add, etc.) must
-    // dispatch document.dispatchEvent(new CustomEvent('cart:updated'))
-    // after a successful /cart/add.js call, or this never runs.
     function updateCartBadge() {
       fetch('/cart.js')
         .then((response) => response.json())
