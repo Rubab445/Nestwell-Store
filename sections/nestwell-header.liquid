@@ -1,0 +1,508 @@
+{%- liquid
+  assign menu = linklists[section.settings.main_menu]
+-%}
+
+<div class="nestwell-announcement">{{ section.settings.announcement_text | escape }}</div>
+
+<header class="nestwell-header">
+  <div class="nestwell-header__container">
+    <button class="nestwell-header__menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="header-mobile-nav">
+      <span class="nestwell-header__menu-icon"></span>
+    </button>
+
+    <a href="{{ routes.root_url }}" class="nestwell-header__logo">
+      {%- if section.settings.logo != blank -%}
+        <img
+          src="{{ section.settings.logo | image_url: width: 300 }}"
+          alt="{{ section.settings.logo.alt | default: shop.name | escape }}"
+          class="nestwell-header__logo-img"
+          width="{{ section.settings.logo.width }}"
+          height="{{ section.settings.logo.height }}"
+          loading="eager"
+        >
+      {%- else -%}
+        <span class="nestwell-header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    {%- if menu != blank -%}
+      <nav class="nestwell-header__nav" aria-label="Main menu">
+        {%- for link in menu.links -%}
+          <a
+            href="{{ link.url }}"
+            class="nestwell-header__nav-link{% if link.title == 'Sale' or link.title == 'sale' %} nestwell-header__nav-link--sale{% endif %}{% if link.active %} nestwell-header__nav-link--active{% endif %}"
+            {% if link.active %}
+              aria-current="page"
+            {% endif %}
+          >
+            {{ link.title | escape }}
+          </a>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+
+    <div class="nestwell-header__icons">
+      <a href="{{ routes.search_url }}" class="nestwell-header__icon-btn" aria-label="Search">
+        {% render 'header-search' %}
+      </a>
+      <a
+        href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+        class="nestwell-header__icon-btn nestwell-header__icon-btn--account"
+        aria-label="{% if customer %}Account{% else %}Log in{% endif %}"
+      >
+        {% render 'icon-account' %}
+      </a>
+
+      <a href="{{ routes.cart_url }}" class="nestwell-header__icon-btn nestwell-header__icon-btn--cart" aria-label="Cart">
+        {% render 'icon-cart' %}
+        <span class="nestwell-header__cart-count" data-cart-count>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+
+  {%- if menu != blank -%}
+    <div class="nestwell-header__overlay" data-drawer-overlay hidden></div>
+
+    <nav
+      id="header-mobile-nav"
+      class="nestwell-header__drawer"
+      aria-label="Mobile menu"
+      hidden
+    >
+      <div class="nestwell-header__drawer-top">
+        <button class="nestwell-header__drawer-close" data-drawer-close aria-label="Close menu">
+          {% render 'icon-close' %}
+        </button>
+      </div>
+
+      {%- for link in menu.links -%}
+        <a href="{{ link.url }}" class="nestwell-header__mobile-nav-link">{{ link.title | escape }}</a>
+      {%- endfor -%}
+    </nav>
+  {%- endif -%}
+</header>
+
+{% stylesheet %}
+  .nestwell-announcement {
+    background: rgb(var(--nestwell-primary));
+    color: rgb(var(--nestwell-on-primary));
+    text-align: center;
+    padding: 8px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .nestwell-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    background: rgba(var(--nestwell-surface), 0.9);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(var(--nestwell-outline-variant), 0.3);
+    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nestwell-header--scrolled {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .nestwell-header--scrolled .nestwell-header__container {
+    height: 64px;
+  }
+
+  .nestwell-header__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-header__container {
+      padding: 0 64px;
+    }
+  }
+
+  .nestwell-header__logo {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .nestwell-header__logo-img {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .nestwell-header__logo-text {
+    display: none;
+    font-family: 'EB Garamond', serif;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: rgb(var(--nestwell-primary));
+  }
+
+  @media screen and (min-width: 640px) {
+    .nestwell-header__logo-text {
+      display: block;
+    }
+  }
+
+  .nestwell-header__nav {
+    display: none;
+    align-items: center;
+    gap: 24px;
+    flex: 2;
+    justify-content: center;
+  }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-header__nav {
+      display: flex;
+    }
+  }
+
+  .nestwell-header__nav-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: rgb(var(--nestwell-on-surface-variant));
+    transition: color 0.2s ease;
+  }
+
+  .nestwell-header__nav-link:hover,
+  .nestwell-header__nav-link--active {
+    color: rgb(var(--nestwell-primary));
+    font-weight: 600;
+  }
+
+  .nestwell-header__nav-link--sale {
+    color: rgb(var(--nestwell-error));
+  }
+
+  .nestwell-header__nav-link--sale:hover {
+    color: rgba(var(--nestwell-error), 0.8);
+  }
+
+  .nestwell-header__icons {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 24px;
+  }
+
+  .nestwell-header__icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: rgb(var(--nestwell-on-surface-variant));
+    font-size: 20px;
+    line-height: 1;
+    transition: color 0.2s ease;
+    text-decoration: none;
+  }
+
+  .nestwell-header__icon-btn:hover {
+    color: rgb(var(--nestwell-primary));
+  }
+
+  .nestwell-header__icon-btn--account {
+    display: none;
+  }
+
+  @media screen and (min-width: 640px) {
+    .nestwell-header__icon-btn--account {
+      display: flex;
+    }
+  }
+
+  .nestwell-header__cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: rgb(var(--nestwell-primary));
+    color: rgb(var(--nestwell-on-primary));
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nestwell-header__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 60;
+  }
+
+  .nestwell-header__drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh;
+    background: rgba(var(--nestwell-surface), 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 61;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .nestwell-header__drawer:not([hidden]) {
+    transform: translateY(0);
+  }
+
+  .nestwell-header__drawer-top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+
+  .nestwell-header__drawer-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgb(var(--nestwell-primary));
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nestwell-header__mobile-nav-link {
+    padding: 12px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgb(var(--nestwell-on-surface-variant));
+    border-bottom: 1px solid rgba(var(--nestwell-outline-variant), 0.2);
+  }
+
+  .nestwell-header__menu-btn {
+    display: none;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .nestwell-header__menu-btn {
+      display: flex;
+    }
+  }
+
+  .nestwell-header__menu-icon,
+  .nestwell-header__menu-icon::before,
+  .nestwell-header__menu-icon::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: rgb(var(--nestwell-primary));
+  }
+
+  .nestwell-header__menu-icon {
+    position: relative;
+  }
+
+  .nestwell-header__menu-icon::before,
+  .nestwell-header__menu-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+
+  .nestwell-header__menu-icon::before {
+    top: -6px;
+  }
+
+  .nestwell-header__menu-icon::after {
+    top: 6px;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', () => {
+    const header = document.querySelector('.nestwell-header');
+    const drawer = document.getElementById('header-mobile-nav');
+    const overlay = document.querySelector('[data-drawer-overlay]');
+    const desktopQuery = window.matchMedia('(min-width: 990px)');
+    let lastFocused = null;
+
+    // Scroll-shrink state
+    if (header) {
+      const SCROLL_THRESHOLD = 40;
+
+      function handleScroll() {
+        if (window.scrollY > SCROLL_THRESHOLD) {
+          header.classList.add('nestwell-header--scrolled');
+        } else {
+          header.classList.remove('nestwell-header--scrolled');
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+    }
+
+    // Mobile drawer — delegated listeners, no stale element references
+    function getFocusable() {
+      return drawer ? drawer.querySelectorAll('a[href], button:not([disabled])') : [];
+    }
+
+    function openDrawer() {
+      if (!drawer || !overlay) return;
+      lastFocused = document.activeElement;
+      drawer.removeAttribute('hidden');
+      overlay.removeAttribute('hidden');
+      document.querySelector('.nestwell-header__menu-btn')?.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+
+      const focusable = getFocusable();
+      if (focusable.length) focusable[0].focus();
+    }
+
+    function closeDrawer() {
+      if (!drawer || !overlay) return;
+      drawer.setAttribute('hidden', '');
+      overlay.setAttribute('hidden', '');
+      document.querySelector('.nestwell-header__menu-btn')?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      if (lastFocused) lastFocused.focus();
+    }
+
+    document.addEventListener('click', (event) => {
+      if (event.target.closest('.nestwell-header__menu-btn')) {
+        openDrawer();
+      } else if (
+        event.target.closest('[data-drawer-close]') ||
+        event.target.closest('[data-drawer-overlay]')
+      ) {
+        closeDrawer();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (!drawer || drawer.hasAttribute('hidden')) return;
+
+      if (event.key === 'Escape') {
+        closeDrawer();
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        const focusable = Array.from(getFocusable());
+        if (!focusable.length) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    function handleBreakpointChange(event) {
+      if (event.matches && drawer && overlay) {
+        drawer.setAttribute('hidden', '');
+        overlay.setAttribute('hidden', '');
+        document.querySelector('.nestwell-header__menu-btn')?.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+    }
+
+    desktopQuery.addEventListener('change', handleBreakpointChange);
+    handleBreakpointChange(desktopQuery);
+
+    // Cart badge sync. Fires on a custom 'cart:updated' event —
+    // your add-to-cart JS (product page, quick-add, etc.) must
+    // dispatch document.dispatchEvent(new CustomEvent('cart:updated'))
+    // after a successful /cart/add.js call, or this never runs.
+    function updateCartBadge() {
+      fetch('/cart.js')
+        .then((response) => response.json())
+        .then((cart) => {
+          document.querySelectorAll('[data-cart-count]').forEach((el) => {
+            el.textContent = cart.item_count;
+          });
+        })
+        .catch((error) => console.error('Cart badge update failed:', error));
+    }
+
+    document.addEventListener('cart:updated', updateCartBadge);
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Nestwell Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement bar text",
+      "default": "Free shipping on orders over $75"
+    },
+    {
+      "type": "link_list",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "main-menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nestwell Header"
+    }
+  ]
+}
+{% endschema %}
