@@ -9,8 +9,16 @@
  */
 {
   "sections": {
-    "nestwell-hero":{
-      "type":"nestwell-hero",
+    "nestwell-hero": {
+      "type": "nestwell-hero",
+      "settings": {
+        "background_image": "shopify://shop_images/bg.jpg",
+        "eyebrow_text": "New Collection",
+        "heading": "Sanctuary\nFound.",
+        "subheading": "Curated pieces that transform spaces into serene retreats. Discover tactile luxury for the modern home.",
+        "button_label": "Explore Collection",
+        "button_link": ""
+      }
     }
   },
   "order": [
