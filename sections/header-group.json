@@ -11,17 +11,12 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
-    
     "header": {
       "type": "nestwell-header",
       "settings": {
-        "menu": "main-menu",
-        "menu_type_desktop": "dropdown",
-        "sticky_header_type": "on-scroll-up",
-        "show_line_separator": true,
-        "margin_bottom": 0,
-        "padding_top": 20,
-        "padding_bottom": 20
+        "logo": "shopify://shop_images/unnamed.jpg",
+        "announcement_text": "Free shipping on orders over $75",
+        "main_menu": "main-menu"
       }
     }
   },
