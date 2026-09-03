@@ -1,5 +1,5 @@
 <section class="nestwell-hero">
-  <section class="nestwell-hero">
+  {%- if section.settings.background_image != blank -%}
     <img
       src="{{ section.settings.background_image | image_url: width: 1500 }}"
       srcset="
@@ -9,263 +9,18 @@
         {{ section.settings.background_image | image_url: width: 1920 }} 1920w
       "
       sizes="100vw"
+      width="{{ section.settings.background_image.width }}"
+      height="{{ section.settings.background_image.height }}"
       loading="eager"
       fetchpriority="high"
       alt=""
       class="nestwell-hero__bg-img"
-      id="hero-bg-{{ section.id }}"
     >
-    <div class="nestwell-hero__overlay"></div>
-
-    <div class="nestwell-hero__container">
-      <div class="nestwell-hero__content" id="hero-content-{{ section.id }}">
-        {%- if section.settings.eyebrow_text != blank -%}
-          <span class="nestwell-hero__eyebrow">{{ section.settings.eyebrow_text | escape }}</span>
-        {%- endif -%}
-
-        {%- if section.settings.heading != blank -%}
-          <h1 class="nestwell-hero__title">{{ section.settings.heading | escape | newline_to_br }}</h1>
-        {%- endif -%}
-
-        {%- if section.settings.subheading != blank -%}
-          <p class="nestwell-hero__subtitle">{{ section.settings.subheading | escape | newline_to_br }}</p>
-        {%- endif -%}
-
-        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
-          <a href="{{ section.settings.button_link }}" class="nestwell-hero__cta">
-            {{ section.settings.button_label | escape }}
-            <span class="nestwell-hero__cta-icon">→</span>
-          </a>
-        {%- endif -%}
-      </div>
-    </div>
-  </section>
-
-  {% schema %}
-{
-  "name": "Nestwell Hero",
-  "settings": [
-    {
-      "type": "image_picker",
-      "id": "background_image",
-      "label": "Background image"
-    },
-    {
-      "type": "text",
-      "id": "eyebrow_text",
-      "label": "Eyebrow text",
-      "default": "New Collection"
-    },
-    {
-      "type": "textarea",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Sanctuary\nFound."
-    },
-    {
-      "type": "textarea",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "Curated pieces that transform spaces into serene retreats. Discover tactile luxury for the modern home."
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "Button label",
-      "default": "Explore Collection"
-    },
-    {
-      "type": "url",
-      "id": "button_link",
-      "label": "Button link"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Nestwell Hero"
-    }
-  ]
-}
-  {% endschema %}
-
-  {% stylesheet %}
-    .nestwell-hero {
-      position: relative;
-      width: 100%;
-      height: 85vh;
-      min-height: 600px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      background: #efeeec;
-    }
-
-    .nestwell-hero__bg-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      transform: scale(1.05);
-      transition: transform 2s ease-out;
-    }
-
-    .nestwell-hero__bg-img--loaded {
-      transform: scale(1);
-    }
-
-    .nestwell-hero__overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(23, 25, 22, 0.6) 0%,
-        rgba(23, 25, 22, 0.2) 50%,
-        rgba(23, 25, 22, 0) 100%
-      );
-      mix-blend-mode: multiply;
-    }
-
-    .nestwell-hero__container {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 20px;
-      padding-top: 80px;
-    }
-
-    @media screen and (min-width: 990px) {
-      .nestwell-hero__container {
-        padding-left: 64px;
-        padding-right: 64px;
-      }
-    }
-
-    .nestwell-hero__content {
-      max-width: 42rem;
-      opacity: 0;
-      transform: translateY(2rem);
-      transition: opacity 1s ease-out, transform 1s ease-out;
-    }
-
-    .nestwell-hero__content--visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .nestwell-hero__eyebrow {
-      position: relative;
-      display: block;
-      margin-left: 48px;
-      margin-bottom: 24px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      line-height: 16px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .nestwell-hero__eyebrow::before {
-      content: '';
-      position: absolute;
-      left: -48px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 32px;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.6);
-    }
-
-    .nestwell-hero__title {
-      margin: 0 0 24px;
-      font-family: 'EB Garamond', serif;
-      font-size: 40px;
-      line-height: 48px;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      color: #ffffff;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
-
-    @media screen and (min-width: 750px) {
-      .nestwell-hero__title {
-        font-size: 64px;
-        line-height: 72px;
-        letter-spacing: -0.02em;
-      }
-    }
-
-    .nestwell-hero__subtitle {
-      max-width: 28rem;
-      margin: 0 0 40px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 18px;
-      line-height: 28px;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.9);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
-
-    .nestwell-hero__cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 32px;
-      background: #ffffff;
-      color: #171916;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      line-height: 16px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-
-    .nestwell-hero__cta:hover {
-      background: #171916;
-      color: #ffffff;
-    }
-
-    .nestwell-hero__cta-icon {
-      display: inline-block;
-      transition: transform 0.3s ease;
-    }
-
-    .nestwell-hero__cta:hover .nestwell-hero__cta-icon {
-      transform: translateX(4px);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .nestwell-hero__bg-img {
-        transform: scale(1);
-        transition: none;
-      }
-
-      .nestwell-hero__content {
-        opacity: 1;
-        transform: translateY(0);
-        transition: none;
-      }
-
-      .nestwell-hero__cta-icon,
-      .nestwell-hero__cta {
-        transition: none;
-      }
-    }
-  {% endstylesheet %}
+  {%- endif -%}
   <div class="nestwell-hero__overlay"></div>
 
   <div class="nestwell-hero__container">
-    <div class="nestwell-hero__content" id="hero-content-{{ section.id }}">
+    <div class="nestwell-hero__content">
       {%- if section.settings.eyebrow_text != blank -%}
         <span class="nestwell-hero__eyebrow">{{ section.settings.eyebrow_text | escape }}</span>
       {%- endif -%}
@@ -281,7 +36,7 @@
       {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
         <a href="{{ section.settings.button_link }}" class="nestwell-hero__cta">
           {{ section.settings.button_label | escape }}
-          <span class="nestwell-hero__cta-icon">→</span>
+          <span class="material-symbols-outlined nestwell-hero__cta-icon">arrow_forward</span>
         </a>
       {%- endif -%}
     </div>
@@ -355,11 +110,14 @@
     object-fit: cover;
     object-position: center;
     transform: scale(1.05);
-    transition: transform 2s ease-out;
+    animation: nestwell-hero-bg-scale 2s ease-out forwards;
+    filter: brightness(85%);
   }
 
-  .nestwell-hero__bg-img--loaded {
-    transform: scale(1);
+  @keyframes nestwell-hero-bg-scale {
+    to {
+      transform: scale(1);
+    }
   }
 
   .nestwell-hero__overlay {
@@ -387,15 +145,17 @@
   }
 
   .nestwell-hero__content {
-    max-width: 42rem;
+    max-width: 50rem;
     opacity: 0;
     transform: translateY(2rem);
-    transition: opacity 1s ease-out, transform 1s ease-out;
+    animation: nestwell-hero-content-in 1s ease-out 0.1s forwards;
   }
 
-  .nestwell-hero__content--visible {
-    opacity: 1;
-    transform: translateY(0);
+  @keyframes nestwell-hero-content-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .nestwell-hero__eyebrow {
@@ -443,7 +203,7 @@
   }
 
   .nestwell-hero__subtitle {
-    max-width: 28rem;
+    max-width: 48rem;
     margin: 0 0 40px;
     font-family: 'DM Sans', sans-serif;
     font-size: 18px;
@@ -487,15 +247,11 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .nestwell-hero__bg-img {
-      transform: scale(1);
-      transition: none;
-    }
-
+    .nestwell-hero__bg-img,
     .nestwell-hero__content {
+      animation: none;
+      transform: none;
       opacity: 1;
-      transform: translateY(0);
-      transition: none;
     }
 
     .nestwell-hero__cta-icon,
