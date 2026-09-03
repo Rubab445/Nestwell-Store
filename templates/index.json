@@ -19,9 +19,13 @@
         "button_label": "Explore Collection",
         "button_link": "shopify://collections"
       }
+    },
+    "nestwell-rooms":{
+      "type": "nestwell-rooms"
     }
   },
   "order": [
-    "nestwell-hero"
+    "nestwell-hero",
+    "nestwell-rooms"
   ]
 }

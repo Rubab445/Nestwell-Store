@@ -36,7 +36,7 @@
       {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
         <a href="{{ section.settings.button_link }}" class="nestwell-hero__cta">
           {{ section.settings.button_label | escape }}
-          <span class="material-symbols-outlined nestwell-hero__cta-icon">arrow_forward</span>
+          <span class="material-symbols-outlined nestwell-hero__cta-icon">{% render 'arrow-forward' %}</span>
         </a>
       {%- endif -%}
     </div>
