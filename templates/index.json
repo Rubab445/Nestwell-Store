@@ -20,8 +20,54 @@
         "button_link": "shopify://collections"
       }
     },
-    "nestwell-rooms":{
-      "type": "nestwell-rooms"
+    "nestwell-rooms": {
+      "type": "nestwell-rooms",
+      "blocks": {
+        "room_m97ecn": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/living.jpg",
+            "title": "Living Room",
+            "link": ""
+          }
+        },
+        "room_EmabBa": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/bedroom.jpg",
+            "title": "Bedroom",
+            "link": ""
+          }
+        },
+        "room_zVeQY9": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/kitchen.jpg",
+            "title": "Kitchen",
+            "link": ""
+          }
+        },
+        "room_fEmAep": {
+          "type": "room",
+          "settings": {
+            "image": "shopify://shop_images/office.jpg",
+            "title": "Office",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "room_m97ecn",
+        "room_EmabBa",
+        "room_zVeQY9",
+        "room_fEmAep"
+      ],
+      "settings": {
+        "heading": "Curate Your Space",
+        "subheading": "Thoughtfully designed pieces tailored for every room in your sanctuary.",
+        "link_label": "Shop All Rooms",
+        "link_url": ""
+      }
     }
   },
   "order": [
