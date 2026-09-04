@@ -1,0 +1,419 @@
+<footer class="nestwell-footer">
+  <div class="nestwell-footer__container">
+    <div class="nestwell-footer__grid">
+      <div class="nestwell-footer__brand">
+        <div>
+          <h4 class="nestwell-footer__brand-name">{{ shop.name }}</h4>
+          {%- if section.settings.description != blank -%}
+            <p class="nestwell-footer__description">{{ section.settings.description | escape }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- if section.blocks.size > 0 -%}
+          <div class="nestwell-footer__social">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'social' and block.settings.url != blank -%}
+                
+                  href="{{ block.settings.url }}"
+                  class="nestwell-footer__social-link"
+                  aria-label="{{ block.settings.platform | capitalize }}"
+                  target="_blank"
+                  rel="noopener"
+                  {{ block.shopify_attributes }}
+                >
+                  <span class="material-symbols-outlined">
+                    {%- case block.settings.platform -%}
+                      {%- when 'facebook' -%}public
+                      {%- when 'instagram' -%}camera_alt
+                      {%- when 'pinterest' -%}push_pin
+                      {%- when 'tiktok' -%}music_note
+                      {%- when 'twitter' -%}alternate_email
+                      {%- when 'youtube' -%}play_circle
+                      {%- else -%}share
+                    {%- endcase -%}
+                  </span>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.footer_menu != blank -%}
+        <div class="nestwell-footer__nav-col">
+          <h5 class="nestwell-footer__col-heading">{{ section.settings.footer_menu.title | escape }}</h5>
+          <nav class="nestwell-footer__nav">
+            {%- for link in section.settings.footer_menu.links -%}
+              <a href="{{ link.url }}" class="nestwell-footer__nav-link">{{ link.title | escape }}</a>
+            {%- endfor -%}
+          </nav>
+        </div>
+      {%- endif -%}
+
+      <div class="nestwell-footer__newsletter-col">
+        {%- if section.settings.newsletter_heading != blank -%}
+          <h5 class="nestwell-footer__col-heading">{{ section.settings.newsletter_heading | escape }}</h5>
+        {%- endif -%}
+        {%- if section.settings.newsletter_text != blank -%}
+          <p class="nestwell-footer__newsletter-text">{{ section.settings.newsletter_text | escape }}</p>
+        {%- endif -%}
+
+        {%- form 'customer', id: 'NestwellFooterNewsletter', class: 'nestwell-footer__newsletter-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="nestwell-footer__newsletter-input-wrap">
+            <label for="NestwellNewsletterEmail-{{ section.id }}" class="visually-hidden">Email</label>
+            <input
+              id="NestwellNewsletterEmail-{{ section.id }}"
+              type="email"
+              name="contact[email]"
+              class="nestwell-footer__newsletter-input"
+              value="{% if customer %}{{ customer.email }}{% endif %}"
+              placeholder="Your email"
+              autocomplete="email"
+              required
+            >
+            <button type="submit" class="nestwell-footer__newsletter-submit" aria-label="Subscribe">
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+          {%- if form.errors -%}
+            <p class="nestwell-footer__newsletter-message nestwell-footer__newsletter-message--error">
+              {{ form.errors.messages['email'] }}
+            </p>
+          {%- endif -%}
+          {%- if form.posted_successfully? -%}
+            <p class="nestwell-footer__newsletter-message nestwell-footer__newsletter-message--success">
+              Thanks for subscribing!
+            </p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+
+    <div class="nestwell-footer__bottom">
+      <span class="nestwell-footer__copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+      <div class="nestwell-footer__legal">
+        {%- if shop.policies.privacy_policy != blank -%}
+          <a href="{{ shop.policies.privacy_policy.url }}" class="nestwell-footer__legal-link">{{ shop.policies.privacy_policy.title }}</a>
+        {%- endif -%}
+        {%- if shop.policies.terms_of_service != blank -%}
+          <a href="{{ shop.policies.terms_of_service.url }}" class="nestwell-footer__legal-link">{{ shop.policies.terms_of_service.title }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Nestwell Footer",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Crafting sanctuaries of serenity and tactile luxury for the modern home."
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu",
+      "label": "Footer menu"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Newsletter"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_text",
+      "label": "Newsletter text",
+      "default": "Join our circle for exclusive early access and interior inspiration."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social",
+      "name": "Social link",
+      "settings": [
+        {
+          "type": "select",
+          "id": "platform",
+          "label": "Platform",
+          "options": [
+            { "value": "facebook", "label": "Facebook" },
+            { "value": "instagram", "label": "Instagram" },
+            { "value": "pinterest", "label": "Pinterest" },
+            { "value": "tiktok", "label": "TikTok" },
+            { "value": "twitter", "label": "Twitter / X" },
+            { "value": "youtube", "label": "YouTube" }
+          ],
+          "default": "instagram"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Nestwell Footer",
+      "blocks": [
+        { "type": "social" },
+        { "type": "social" },
+        { "type": "social" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+  .nestwell-footer {
+    width: 100%;
+    background: #f4f3f1;
+    border-top: 1px solid #c6c7c0;
+    margin-top: 120px;
+    padding: 120px 20px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-footer {
+      padding-left: 64px;
+      padding-right: 64px;
+    }
+  }
+
+  .nestwell-footer__container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .nestwell-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .nestwell-footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-footer__grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .nestwell-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .nestwell-footer__brand-name {
+    margin: 0 0 16px;
+    font-family: 'EB Garamond', serif;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 500;
+    color: #171916;
+  }
+
+  .nestwell-footer__description {
+    max-width: 20rem;
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #454842;
+  }
+
+  .nestwell-footer__social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .nestwell-footer__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #454842;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .nestwell-footer__social-link:hover {
+    color: #171916;
+  }
+
+  .nestwell-footer__social-link .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  .nestwell-footer__col-heading {
+    margin: 0 0 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #171916;
+  }
+
+  .nestwell-footer__nav-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nestwell-footer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nestwell-footer__nav-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #454842;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .nestwell-footer__nav-link:hover {
+    color: #171916;
+  }
+
+  .nestwell-footer__newsletter-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nestwell-footer__newsletter-text {
+    margin: 0 0 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #454842;
+  }
+
+  .nestwell-footer__newsletter-form {
+    width: 100%;
+  }
+
+  .nestwell-footer__newsletter-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #454842;
+    padding: 8px 0;
+  }
+
+  .nestwell-footer__newsletter-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    color: #171916;
+  }
+
+  .nestwell-footer__newsletter-input::placeholder {
+    color: rgba(69, 72, 66, 0.5);
+  }
+
+  .nestwell-footer__newsletter-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #171916;
+    padding: 0;
+  }
+
+  .nestwell-footer__newsletter-submit .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  .nestwell-footer__newsletter-message {
+    margin: 8px 0 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .nestwell-footer__newsletter-message--error {
+    color: #ba1a1a;
+  }
+
+  .nestwell-footer__newsletter-message--success {
+    color: #454842;
+  }
+
+  .nestwell-footer__bottom {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid #c6c7c0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(69, 72, 66, 0.6);
+  }
+
+  @media screen and (min-width: 750px) {
+    .nestwell-footer__bottom {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .nestwell-footer__legal {
+    display: flex;
+    gap: 24px;
+  }
+
+  .nestwell-footer__legal-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .nestwell-footer__legal-link:hover {
+    color: #171916;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+{% endstylesheet %}
