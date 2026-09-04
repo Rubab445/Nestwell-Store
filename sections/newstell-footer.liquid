@@ -13,25 +13,28 @@
           <div class="nestwell-footer__social">
             {%- for block in section.blocks -%}
               {%- if block.type == 'social' and block.settings.url != blank -%}
-               <a href="{{ block.settings.url }}" class="nestwell-footer__social-link" aria-label="
-                {{- block.settings.platform | capitalize -}}
-                " target="_blank" rel="noopener"
-                {{ block.shopify_attributes }}
+                <a
+                  href="{{ block.settings.url }}"
+                  class="nestwell-footer__social-link"
+                  aria-label="                {{- block.settings.platform | capitalize -}}"
+                  target="_blank"
+                  rel="noopener"
+                  {{ block.shopify_attributes }}
                 >
-                {%- case block.settings.platform -%}
-                  {%- when 'facebook' -%}
-                    {%- render 'icon-facebook' -%}
-                  {%- when 'instagram' -%}
-                    {%- render 'icon-instagram' -%}
-                  {%- when 'pinterest' -%}
-                    {%- render 'icon-pinterest' -%}
-                  {%- when 'tiktok' -%}
-                    {%- render 'icon-tiktok' -%}
-                  {%- when 'twitter' -%}
-                    {%- render 'icon-twitter' -%}
-                  {%- when 'youtube' -%}
-                    {%- render 'icon-youtube' -%}
-                {%- endcase -%}
+                  {%- case block.settings.platform -%}
+                    {%- when 'facebook' -%}
+                      {%- render 'icon-facebook' -%}
+                    {%- when 'instagram' -%}
+                      {%- render 'icon-instagram' -%}
+                    {%- when 'pinterest' -%}
+                      {%- render 'icon-pinterest' -%}
+                    {%- when 'tiktok' -%}
+                      {%- render 'icon-tiktok' -%}
+                    {%- when 'twitter' -%}
+                      {%- render 'icon-twitter' -%}
+                    {%- when 'youtube' -%}
+                      {%- render 'icon-youtube' -%}
+                  {%- endcase -%}
                 </a>
               {%- endif -%}
             {%- endfor -%}
@@ -77,7 +80,7 @@
               required
             >
             <button type="submit" class="nestwell-footer__newsletter-submit" aria-label="Subscribe">
-              <span class="material-symbols-outlined">
+              <span >
                 {% render 'icon-arrow-forward' %}
               </span>
             </button>
