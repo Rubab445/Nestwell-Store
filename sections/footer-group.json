@@ -14,29 +14,45 @@
     "newstell_footer_WJRM4n": {
       "type": "newstell-footer",
       "blocks": {
-        "social_TWxEFC": {
+        "social_PchUjJ": {
+          "type": "social",
+          "settings": {
+            "platform": "facebook",
+            "url": "https://www.facebook.com"
+          }
+        },
+        "social_W946VT": {
           "type": "social",
           "settings": {
             "platform": "instagram",
-            "url": ""
+            "url": "https://www.instagram.com"
+          }
+        },
+        "social_TWxEFC": {
+          "type": "social",
+          "settings": {
+            "platform": "pinterest",
+            "url": "https://www.pinterest.com"
           }
         },
         "social_kCxxF4": {
           "type": "social",
           "settings": {
-            "platform": "instagram",
-            "url": ""
+            "platform": "tiktok",
+            "url": "https://www.tiktok.com"
           }
         },
         "social_BjBg6H": {
           "type": "social",
           "settings": {
-            "platform": "instagram",
-            "url": ""
+            "platform": "youtube",
+            "url": "https://www.youtube.com"
           }
         }
       },
       "block_order": [
+        "social_PchUjJ",
+        "social_W946VT",
         "social_TWxEFC",
         "social_kCxxF4",
         "social_BjBg6H"
