@@ -13,7 +13,9 @@
       {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
         <a href="{{ section.settings.link_url }}" class="nestwell-rooms__header-link">
           {{ section.settings.link_label | escape }}
-          <span class="material-symbols-outlined nestwell-rooms__header-link-icon">arrow_outward</span>
+          <span class="material-symbols-outlined nestwell-rooms__header-link-icon">
+            {% render 'arrow-outward' %}
+          </span>
         </a>
       {%- endif -%}
     </div>
@@ -21,33 +23,35 @@
     <div class="nestwell-rooms__grid">
       {%- for block in section.blocks -%}
         {%- if block.type == 'room' -%}
-         <a href="{{ block.settings.link | default: '#' }}" class="nestwell-rooms__item observe-fade-up"
-          style="transition-delay: {{ forloop.index0 | times: 100 }}ms;"
-          {{ block.shopify_attributes }}
+          <a
+            href="{{ block.settings.link | default: '#' }}"
+            class="nestwell-rooms__item observe-fade-up"
+            style="transition-delay: {{ forloop.index0 | times: 100 }}ms;"
+            {{ block.shopify_attributes }}
           >
-          {%- if block.settings.image != blank -%}
-            <img
-              src="{{ block.settings.image | image_url: width: 800 }}"
-              srcset="
-                {{ block.settings.image | image_url: width: 400 }} 400w,
-                {{ block.settings.image | image_url: width: 600 }} 600w,
-                {{ block.settings.image | image_url: width: 800 }} 800w
-              "
-              sizes="(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw"
-              width="{{ block.settings.image.width }}"
-              height="{{ block.settings.image.height }}"
-              loading="lazy"
-              alt="{{ block.settings.title | escape }}"
-              class="nestwell-rooms__item-img"
-            >
-          {%- endif -%}
-          <div class="nestwell-rooms__item-overlay"></div>
-          <div class="nestwell-rooms__item-content">
-            {%- if block.settings.title != blank -%}
-              <h3 class="nestwell-rooms__item-title">{{ block.settings.title | escape }}</h3>
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 800 }}"
+                srcset="
+                  {{ block.settings.image | image_url: width: 400 }} 400w,
+                  {{ block.settings.image | image_url: width: 600 }} 600w,
+                  {{ block.settings.image | image_url: width: 800 }} 800w
+                "
+                sizes="(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="lazy"
+                alt="{{ block.settings.title | escape }}"
+                class="nestwell-rooms__item-img"
+              >
             {%- endif -%}
-            <span class="material-symbols-outlined nestwell-rooms__item-arrow">{% render 'arrow-forward' %}</span>
-          </div>
+            <div class="nestwell-rooms__item-overlay"></div>
+            <div class="nestwell-rooms__item-content">
+              {%- if block.settings.title != blank -%}
+                <h3 class="nestwell-rooms__item-title">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+              <span class="material-symbols-outlined nestwell-rooms__item-arrow">{% render 'arrow-forward' %}</span>
+            </div>
           </a>
         {%- endif -%}
       {%- endfor -%}
@@ -161,7 +165,7 @@
   }
 
   .nestwell-rooms__subtitle {
-    max-width: 28rem;
+    max-width: 50rem;
     margin: 0;
     font-family: 'DM Sans', sans-serif;
     font-size: 16px;
@@ -187,6 +191,7 @@
     text-decoration: none;
     transition: color 0.2s ease, border-color 0.2s ease;
     white-space: nowrap;
+    background-color: brown;
   }
 
   @media screen and (min-width: 750px) {
