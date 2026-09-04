@@ -85,6 +85,7 @@
     </nav>
   {%- endif -%}
 </header>
+<div class="nestwell-header__spacer" aria-hidden="true"></div>
 
 {% stylesheet %}
   .nestwell-announcement {
@@ -101,15 +102,20 @@
   }
 
   .nestwell-header {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 50;
+    left: 0;
     width: 100%;
+    z-index: 50;
     background: rgba(var(--nestwell-surface), 0.9);
     backdrop-filter: blur(8px);
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
     border-bottom: 1px solid rgba(var(--nestwell-outline-variant), 0.3);
-    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nestwell-header__spacer {
+    height: 80px;
   }
 
   .nestwell-header--scrolled {
@@ -128,11 +134,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   @media screen and (min-width: 990px) {
     .nestwell-header__container {
       padding: 0 64px;
+    }
+    .nestwell-header__spacer {
+      height: 80px;
     }
   }
 
@@ -375,11 +385,33 @@
 {% javascript %}
   document.addEventListener('DOMContentLoaded', () => {
     const header = document.querySelector('.nestwell-header');
+    const spacer = document.querySelector('.nestwell-header__spacer');
     const drawer = document.getElementById('header-mobile-nav');
     const overlay = document.querySelector('[data-drawer-overlay]');
     const desktopQuery = window.matchMedia('(min-width: 990px)');
     let lastFocused = null;
 
+    function updateSpacer() {
+      if (header && spacer) {
+        spacer.style.height = header.offsetHeight + 'px';
+      }
+    }
+
+    if (header) {
+      const SCROLL_THRESHOLD = 40;
+      function handleScroll() {
+        if (window.scrollY > SCROLL_THRESHOLD) {
+          header.classList.add('nestwell-header--scrolled');
+        } else {
+          header.classList.remove('nestwell-header--scrolled');
+        }
+        updateSpacer();
+      }
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('resize', updateSpacer);
+      handleScroll();
+      updateSpacer();
+    }
     // Scroll-shrink state
     if (header) {
       const SCROLL_THRESHOLD = 40;

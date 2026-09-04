@@ -36,7 +36,7 @@
       {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
         <a href="{{ section.settings.button_link }}" class="nestwell-hero__cta">
           {{ section.settings.button_label | escape }}
-          <span class="material-symbols-outlined nestwell-hero__cta-icon">{% render 'arrow-forward' %}</span>
+          <span class="material-symbols-outlined nestwell-hero__cta-icon">{% render 'icon-arrow-forward' %}</span>
         </a>
       {%- endif -%}
     </div>
@@ -203,7 +203,7 @@
   }
 
   .nestwell-hero__subtitle {
-    max-width: 48rem;
+    max-width: 28rem;
     margin: 0 0 40px;
     font-family: 'DM Sans', sans-serif;
     font-size: 18px;

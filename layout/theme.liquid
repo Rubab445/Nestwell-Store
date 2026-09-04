@@ -35,6 +35,7 @@
         --nestwell-on-surface-variant: 69, 72, 66;
         --nestwell-outline-variant: 198, 199, 192;
         --nestwell-error: 186, 26, 26;
+        --nestwell-bg: rgb(250, 249, 247)
       }
     {% endstyle %}
 
@@ -134,7 +135,7 @@
 
       {{ scheme_classes | prepend: 'body' }} {
         color: rgba(var(--color-foreground), 0.75);
-        background-color: rgb(var(--color-background));
+        background-color: (var(--nestwell-bg));
       }
 
       :root {

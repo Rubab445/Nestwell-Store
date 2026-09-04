@@ -14,7 +14,7 @@
         <a href="{{ section.settings.link_url }}" class="nestwell-rooms__header-link">
           {{ section.settings.link_label | escape }}
           <span class="material-symbols-outlined nestwell-rooms__header-link-icon">
-            {% render 'arrow-outward' %}
+            {% render 'icon-arrow-outward' %}
           </span>
         </a>
       {%- endif -%}
@@ -26,6 +26,7 @@
           <a
             href="{{ block.settings.link | default: '#' }}"
             class="nestwell-rooms__item observe-fade-up"
+            {% if block.settings.link != blank %}href="{{ block.settings.link }}"{% endif %}
             style="transition-delay: {{ forloop.index0 | times: 100 }}ms;"
             {{ block.shopify_attributes }}
           >
@@ -50,7 +51,7 @@
               {%- if block.settings.title != blank -%}
                 <h3 class="nestwell-rooms__item-title">{{ block.settings.title | escape }}</h3>
               {%- endif -%}
-              <span class="material-symbols-outlined nestwell-rooms__item-arrow">{% render 'arrow-forward' %}</span>
+              <span class="material-symbols-outlined nestwell-rooms__item-arrow">{% render 'icon-arrow-forward' %}</span>
             </div>
           </a>
         {%- endif -%}
@@ -191,7 +192,6 @@
     text-decoration: none;
     transition: color 0.2s ease, border-color 0.2s ease;
     white-space: nowrap;
-    background-color: brown;
   }
 
   @media screen and (min-width: 750px) {
