@@ -28,7 +28,7 @@
           "settings": {
             "image": "shopify://shop_images/living.jpg",
             "title": "Living Room",
-            "link": ""
+            "link": "shopify://collections/living-room"
           }
         },
         "room_EmabBa": {
@@ -36,7 +36,7 @@
           "settings": {
             "image": "shopify://shop_images/bedroom.jpg",
             "title": "Bedroom",
-            "link": ""
+            "link": "shopify://collections/bedroom"
           }
         },
         "room_zVeQY9": {
@@ -44,7 +44,7 @@
           "settings": {
             "image": "shopify://shop_images/kitchen.jpg",
             "title": "Kitchen",
-            "link": ""
+            "link": "shopify://collections/kitchen"
           }
         },
         "room_fEmAep": {
@@ -52,7 +52,7 @@
           "settings": {
             "image": "shopify://shop_images/office.jpg",
             "title": "Office",
-            "link": ""
+            "link": "shopify://collections/office"
           }
         }
       },
@@ -75,5 +75,3 @@
     "nestwell-rooms"
   ]
 }
-
-
