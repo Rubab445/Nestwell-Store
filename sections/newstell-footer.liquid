@@ -13,25 +13,17 @@
           <div class="nestwell-footer__social">
             {%- for block in section.blocks -%}
               {%- if block.type == 'social' and block.settings.url != blank -%}
-                
+                {%- assign social_icon = 'icon-' | append: block.settings.platform -%}
+
+                <a
                   href="{{ block.settings.url }}"
                   class="nestwell-footer__social-link"
-                  aria-label="{{ block.settings.platform | capitalize }}"
+                  aria-label="                {{- block.settings.platform | capitalize -}}"
                   target="_blank"
                   rel="noopener"
                   {{ block.shopify_attributes }}
                 >
-                  <span class="material-symbols-outlined">
-                    {%- case block.settings.platform -%}
-                      {%- when 'facebook' -%}public
-                      {%- when 'instagram' -%}camera_alt
-                      {%- when 'pinterest' -%}push_pin
-                      {%- when 'tiktok' -%}music_note
-                      {%- when 'twitter' -%}alternate_email
-                      {%- when 'youtube' -%}play_circle
-                      {%- else -%}share
-                    {%- endcase -%}
-                  </span>
+                  {%- render social_icon -%}
                 </a>
               {%- endif -%}
             {%- endfor -%}
@@ -40,14 +32,18 @@
       </div>
 
       {%- if section.settings.footer_menu != blank -%}
-        <div class="nestwell-footer__nav-col">
-          <h5 class="nestwell-footer__col-heading">{{ section.settings.footer_menu.title | escape }}</h5>
-          <nav class="nestwell-footer__nav">
-            {%- for link in section.settings.footer_menu.links -%}
-              <a href="{{ link.url }}" class="nestwell-footer__nav-link">{{ link.title | escape }}</a>
-            {%- endfor -%}
-          </nav>
-        </div>
+        {%- for link in section.settings.footer_menu.links -%}
+          {%- if link.links != blank -%}
+            <div class="nestwell-footer__nav-col">
+              <h5 class="nestwell-footer__col-heading">{{ link.title | escape }}</h5>
+              <nav class="nestwell-footer__nav">
+                {%- for child_link in link.links -%}
+                  <a href="{{ child_link.url }}" class="nestwell-footer__nav-link">{{ child_link.title | escape }}</a>
+                {%- endfor -%}
+              </nav>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
       {%- endif -%}
 
       <div class="nestwell-footer__newsletter-col">
@@ -73,12 +69,14 @@
               required
             >
             <button type="submit" class="nestwell-footer__newsletter-submit" aria-label="Subscribe">
-              <span class="material-symbols-outlined">arrow_forward</span>
+              <span class="material-symbols-outlined">
+                {% render 'icon-arrow-forward' %}
+              </span>
             </button>
           </div>
           {%- if form.errors -%}
             <p class="nestwell-footer__newsletter-message nestwell-footer__newsletter-message--error">
-              {{ form.errors.messages['email'] }}
+              {{ form.errors.messages.email }}
             </p>
           {%- endif -%}
           {%- if form.posted_successfully? -%}
@@ -91,13 +89,20 @@
     </div>
 
     <div class="nestwell-footer__bottom">
-      <span class="nestwell-footer__copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+      <span class="nestwell-footer__copyright"
+        >&copy; {{ 'now' | date: '%Y' }}
+        {{ shop.name }}. All rights reserved.</span
+      >
       <div class="nestwell-footer__legal">
-        {%- if shop.policies.privacy_policy != blank -%}
-          <a href="{{ shop.policies.privacy_policy.url }}" class="nestwell-footer__legal-link">{{ shop.policies.privacy_policy.title }}</a>
+        {%- if shop.policies.privacy_policy.url != blank -%}
+          <a href="{{ shop.policies.privacy_policy.url }}" class="nestwell-footer__legal-link">
+            {{- shop.policies.privacy_policy.title -}}
+          </a>
         {%- endif -%}
-        {%- if shop.policies.terms_of_service != blank -%}
-          <a href="{{ shop.policies.terms_of_service.url }}" class="nestwell-footer__legal-link">{{ shop.policies.terms_of_service.title }}</a>
+        {%- if shop.policies.terms_of_service.url != blank -%}
+          <a href="{{ shop.policies.terms_of_service.url }}" class="nestwell-footer__legal-link">
+            {{- shop.policies.terms_of_service.title -}}
+          </a>
         {%- endif -%}
       </div>
     </div>
@@ -117,7 +122,8 @@
     {
       "type": "link_list",
       "id": "footer_menu",
-      "label": "Footer menu"
+      "label": "Footer menu",
+      "info": "Top-level menu items become column headers. Add dropdown items under each to populate that column's links."
     },
     {
       "type": "text",
@@ -163,11 +169,7 @@
   "presets": [
     {
       "name": "Nestwell Footer",
-      "blocks": [
-        { "type": "social" },
-        { "type": "social" },
-        { "type": "social" }
-      ]
+      "blocks": [{ "type": "social" }, { "type": "social" }, { "type": "social" }]
     }
   ]
 }
@@ -247,6 +249,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 20px;
+    height: 20px;
     color: #454842;
     text-decoration: none;
     transition: color 0.2s ease;
@@ -256,8 +260,10 @@
     color: #171916;
   }
 
-  .nestwell-footer__social-link .material-symbols-outlined {
-    font-size: 20px;
+  .nestwell-footer__social-link svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
   }
 
   .nestwell-footer__col-heading {
