@@ -66,7 +66,7 @@
         "heading": "Curate Your Space",
         "subheading": "Thoughtfully designed pieces tailored for every room in your sanctuary.",
         "link_label": "Shop All Rooms",
-        "link_url": ""
+        "link_url": "shopify://collections"
       }
     }
   },
