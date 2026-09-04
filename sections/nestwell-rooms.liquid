@@ -21,35 +21,33 @@
     <div class="nestwell-rooms__grid">
       {%- for block in section.blocks -%}
         {%- if block.type == 'room' -%}
-          
-            href="{{ block.settings.link | default: '#' }}"
-            class="nestwell-rooms__item observe-fade-up"
-            style="transition-delay: {{ forloop.index0 | times: 100 }}ms;"
-            {{ block.shopify_attributes }}
+         <a href="{{ block.settings.link | default: '#' }}" class="nestwell-rooms__item observe-fade-up"
+          style="transition-delay: {{ forloop.index0 | times: 100 }}ms;"
+          {{ block.shopify_attributes }}
           >
-            {%- if block.settings.image != blank -%}
-              <img
-                src="{{ block.settings.image | image_url: width: 800 }}"
-                srcset="
-                  {{ block.settings.image | image_url: width: 400 }} 400w,
-                  {{ block.settings.image | image_url: width: 600 }} 600w,
-                  {{ block.settings.image | image_url: width: 800 }} 800w
-                "
-                sizes="(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw"
-                width="{{ block.settings.image.width }}"
-                height="{{ block.settings.image.height }}"
-                loading="lazy"
-                alt="{{ block.settings.title | escape }}"
-                class="nestwell-rooms__item-img"
-              >
+          {%- if block.settings.image != blank -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 800 }}"
+              srcset="
+                {{ block.settings.image | image_url: width: 400 }} 400w,
+                {{ block.settings.image | image_url: width: 600 }} 600w,
+                {{ block.settings.image | image_url: width: 800 }} 800w
+              "
+              sizes="(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw"
+              width="{{ block.settings.image.width }}"
+              height="{{ block.settings.image.height }}"
+              loading="lazy"
+              alt="{{ block.settings.title | escape }}"
+              class="nestwell-rooms__item-img"
+            >
+          {%- endif -%}
+          <div class="nestwell-rooms__item-overlay"></div>
+          <div class="nestwell-rooms__item-content">
+            {%- if block.settings.title != blank -%}
+              <h3 class="nestwell-rooms__item-title">{{ block.settings.title | escape }}</h3>
             {%- endif -%}
-            <div class="nestwell-rooms__item-overlay"></div>
-            <div class="nestwell-rooms__item-content">
-              {%- if block.settings.title != blank -%}
-                <h3 class="nestwell-rooms__item-title">{{ block.settings.title | escape }}</h3>
-              {%- endif -%}
-              <span class="material-symbols-outlined nestwell-rooms__item-arrow">{% render 'arrow-forward' %}</span>
-            </div>
+            <span class="material-symbols-outlined nestwell-rooms__item-arrow">{% render 'arrow-forward' %}</span>
+          </div>
           </a>
         {%- endif -%}
       {%- endfor -%}
@@ -330,19 +328,26 @@
     if (!targets.length) return;
 
     if (!('IntersectionObserver' in window)) {
-      targets.forEach(function (el) { el.classList.add('is-visible'); });
+      targets.forEach(function (el) {
+        el.classList.add('is-visible');
+      });
       return;
     }
 
-    var observer = new IntersectionObserver(function (entries, obs) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
+    var observer = new IntersectionObserver(
+      function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
 
-    targets.forEach(function (el) { observer.observe(el); });
+    targets.forEach(function (el) {
+      observer.observe(el);
+    });
   });
 {% endjavascript %}
