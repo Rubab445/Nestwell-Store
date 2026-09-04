@@ -11,6 +11,44 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
+    "newstell_footer_WJRM4n": {
+      "type": "newstell-footer",
+      "blocks": {
+        "social_TWxEFC": {
+          "type": "social",
+          "settings": {
+            "platform": "instagram",
+            "url": ""
+          }
+        },
+        "social_kCxxF4": {
+          "type": "social",
+          "settings": {
+            "platform": "instagram",
+            "url": ""
+          }
+        },
+        "social_BjBg6H": {
+          "type": "social",
+          "settings": {
+            "platform": "instagram",
+            "url": ""
+          }
+        }
+      },
+      "block_order": [
+        "social_TWxEFC",
+        "social_kCxxF4",
+        "social_BjBg6H"
+      ],
+      "name": "Nestwell Footer",
+      "settings": {
+        "description": "Crafting sanctuaries of serenity and tactile luxury for the modern home.",
+        "footer_menu": "footer",
+        "newsletter_heading": "Newsletter",
+        "newsletter_text": "Join our circle for exclusive early access and interior inspiration."
+      }
+    },
     "footer": {
       "type": "footer",
       "settings": {
@@ -30,6 +68,7 @@
     }
   },
   "order": [
+    "newstell_footer_WJRM4n",
     "footer"
   ]
 }

@@ -79,15 +79,11 @@
         "button_label": "Read Our Story",
         "button_link": "shopify://collections"
       }
-    }, 
-    "newstell-footer": {
-      "type": "newstell-footer"
     }
   },
   "order": [
     "nestwell-hero",
     "nestwell-rooms",
-    "newstell-story",
-    "newstell-footer"
+    "newstell-story"
   ]
 }
