@@ -1,0 +1,303 @@
+<section class="nestwell-story" id="nestwell-story-{{ section.id }}">
+  <div class="nestwell-story__container">
+    <div class="nestwell-story__media observe-fade-up">
+      {%- if section.settings.image != blank -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 1200 }}"
+          srcset="
+            {{ section.settings.image | image_url: width: 600 }} 600w,
+            {{ section.settings.image | image_url: width: 900 }} 900w,
+            {{ section.settings.image | image_url: width: 1200 }} 1200w,
+            {{ section.settings.image | image_url: width: 1600 }} 1600w
+          "
+          sizes="(min-width: 990px) 50vw, 100vw"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          loading="lazy"
+          alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+          class="nestwell-story__img"
+          data-parallax-img
+        >
+      {%- endif -%}
+    </div>
+
+    <div class="nestwell-story__content observe-fade-up">
+      {%- if section.settings.eyebrow_text != blank -%}
+        <p class="nestwell-story__eyebrow">{{ section.settings.eyebrow_text | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 class="nestwell-story__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.body_text != blank -%}
+        <div class="nestwell-story__body">{{ section.settings.body_text }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <a href="{{ section.settings.button_link }}" class="nestwell-story__button">
+          {{ section.settings.button_label | escape }}
+          <span class="material-symbols-outlined nestwell-story__button-icon">arrow_outward</span>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Nestwell Brand Story",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow text",
+      "default": "Our Philosophy"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Crafted for how you actually live"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>We believe furniture should feel considered, not decorative. Every piece we carry is chosen for the way it holds up to real life.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Our Story"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nestwell Brand Story"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+  .nestwell-story {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 80px 20px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-story {
+      padding: 120px 64px;
+    }
+  }
+
+  .nestwell-story__container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-story__container {
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+  }
+
+  .nestwell-story__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #e9e8e6;
+  }
+
+  .nestwell-story__img {
+    position: absolute;
+    top: -10%;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+    will-change: transform;
+  }
+
+  .nestwell-story__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nestwell-story__eyebrow {
+    margin: 0 0 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #454842;
+  }
+
+  .nestwell-story__heading {
+    margin: 0 0 24px;
+    font-family: 'EB Garamond', serif;
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 400;
+    color: #171916;
+  }
+
+  @media screen and (min-width: 750px) {
+    .nestwell-story__heading {
+      font-size: 40px;
+      line-height: 48px;
+    }
+  }
+
+  .nestwell-story__body {
+    max-width: 34rem;
+    margin: 0 0 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 26px;
+    font-weight: 400;
+    color: #454842;
+  }
+
+  .nestwell-story__body p {
+    margin: 0 0 16px;
+  }
+
+  .nestwell-story__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .nestwell-story__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #171916;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #171916;
+    text-decoration: none;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .nestwell-story__button:hover {
+    color: #454842;
+    border-color: #454842;
+  }
+
+  .nestwell-story__button-icon {
+    font-size: 16px;
+  }
+
+  .observe-fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .observe-fade-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nestwell-story__content.observe-fade-up {
+    transition-delay: 150ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .observe-fade-up {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+    .nestwell-story__img {
+      transform: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function () {
+    var section = document.getElementById('nestwell-story-{{ section.id }}');
+    if (!section) return;
+
+    // Reused fade-in pattern, scoped to this section
+    var fadeTargets = section.querySelectorAll('.observe-fade-up');
+    if (fadeTargets.length) {
+      if (!('IntersectionObserver' in window)) {
+        fadeTargets.forEach(function (el) { el.classList.add('is-visible'); });
+      } else {
+        var fadeObserver = new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        fadeTargets.forEach(function (el) { fadeObserver.observe(el); });
+      }
+    }
+
+    // Parallax, scoped to this section, throttled via requestAnimationFrame
+    var parallaxImg = section.querySelector('[data-parallax-img]');
+    if (!parallaxImg) return;
+
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    var ticking = false;
+
+    function updateParallax() {
+      var rect = section.getBoundingClientRect();
+      var viewportHeight = window.innerHeight;
+
+      if (rect.bottom < 0 || rect.top > viewportHeight) {
+        ticking = false;
+        return;
+      }
+
+      var progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+      var offset = (progress - 0.5) * 60; // max ~30px shift either way
+
+      parallaxImg.style.transform = 'translateY(' + offset + 'px)';
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    onScroll();
+  });
+{% endjavascript %}

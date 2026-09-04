@@ -68,10 +68,14 @@
         "link_label": "Shop All Rooms",
         "link_url": "shopify://collections"
       }
+    },
+    "newstell-story": {
+      "type": "newstell-story"
     }
   },
   "order": [
     "nestwell-hero",
-    "nestwell-rooms"
+    "nestwell-rooms",
+    "newstell-story"
   ]
 }
