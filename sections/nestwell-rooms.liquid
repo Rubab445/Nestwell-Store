@@ -26,7 +26,9 @@
           <a
             href="{{ block.settings.link | default: '#' }}"
             class="nestwell-rooms__item observe-fade-up"
-            {% if block.settings.link != blank %}href="{{ block.settings.link }}"{% endif %}
+            {% if block.settings.link != blank %}
+              href="{{ block.settings.link }}"
+            {% endif %}
             style="transition-delay: {{ forloop.index0 | times: 100 }}ms;"
             {{ block.shopify_attributes }}
           >
@@ -225,6 +227,9 @@
   @media screen and (min-width: 990px) {
     .nestwell-rooms__grid {
       grid-template-columns: repeat(4, 1fr);
+    }
+    .nestwell-story__body {
+      max-width: 70rem;
     }
   }
 
