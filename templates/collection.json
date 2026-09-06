@@ -2,7 +2,7 @@
   "sections": {
     "header": { "type": "nestwell-header" },
     "main": { "type": "main-collection" },
-    "footer": { "type": "footer" }
+    "footer": { "type": "newstell-footer" }
   },
   "order": ["header", "main", "footer"]
 }

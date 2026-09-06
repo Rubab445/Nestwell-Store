@@ -1,4 +1,4 @@
-<div class="nestwell-collection">
+<div class="nestwell-collection" data-section-id="{{ section.id }}">
   <div class="nestwell-collection__header">
     <nav aria-label="Breadcrumb" class="nestwell-collection__breadcrumb">
       <ol class="nestwell-collection__breadcrumb-list">
@@ -307,7 +307,7 @@
   }
 
   .nestwell-collection__title-text {
-    max-width: 42rem;
+    max-width: 70rem;
   }
 
   .nestwell-collection__title {
@@ -1024,7 +1024,10 @@
     }
 
     // Toast helper
-    var toastContainer = root.parentElement.querySelector('.nestwell-collection__toast-container');
+    var sectionId = root.getAttribute('data-section-id');
+    var toastContainer = document.querySelector(
+      '.nestwell-collection__toast-container[data-section-id="' + sectionId + '"]'
+    );
     function showToast(message) {
       if (!toastContainer) return;
       var toast = document.createElement('div');
