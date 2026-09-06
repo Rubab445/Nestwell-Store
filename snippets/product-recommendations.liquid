@@ -1,0 +1,12 @@
+{%- comment -%}
+  Renders Shopify's native product recommendations for the current product.
+  Accepts: product, section_id
+  Usage: {% render 'product-recommendations', product: product, section_id: section.id %}
+{%- endcomment -%}
+
+<product-recommendations
+  class="nestwell-product__related-wrap"
+  data-url="{{ routes.product_recommendations_url }}?section_id=related-products&product_id={{ product.id }}&limit=4&intent=related"
+>
+  <div class="nestwell-product__related-loading" aria-hidden="true"></div>
+</product-recommendations>

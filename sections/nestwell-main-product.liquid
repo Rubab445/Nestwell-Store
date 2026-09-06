@@ -1,0 +1,745 @@
+<div class="nestwell-product" data-section-id="{{ section.id }}">
+  <nav aria-label="Breadcrumb" class="nestwell-product__breadcrumb">
+    <ol class="nestwell-product__breadcrumb-list">
+      <li><a href="{{ routes.root_url }}">Home</a></li>
+      <li><span class="nestwell-product__breadcrumb-chevron">/</span></li>
+      <li><a href="{{ routes.collections_url }}">Shop</a></li>
+      {%- if product.collections.first -%}
+        <li><span class="nestwell-product__breadcrumb-chevron">/</span></li>
+        <li><a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a></li>
+      {%- endif -%}
+      <li><span class="nestwell-product__breadcrumb-chevron">/</span></li>
+      <li aria-current="page" class="nestwell-product__breadcrumb-current">{{ product.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="nestwell-product__body">
+    {%- comment -%} ============ GALLERY ============ {%- endcomment -%}
+    <div class="nestwell-product__gallery">
+      {%- if product.media.size > 1 -%}
+        <div class="nestwell-product__thumbnails" data-thumbnails>
+          {%- for media in product.media -%}
+            <button
+              type="button"
+              class="nestwell-product__thumb{% if forloop.first %} nestwell-product__thumb--active{% endif %}"
+              data-thumb
+              data-media-id="{{ media.id }}"
+              aria-label="Show image {{ forloop.index }}"
+            >
+              <img
+                src="{{ media | image_url: width: 160 }}"
+                width="80"
+                height="96"
+                loading="lazy"
+                alt="{{ media.alt | default: product.title | escape }}"
+              >
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <div class="nestwell-product__main-image-wrap" data-main-image-wrap>
+        {%- for media in product.media -%}
+          <img
+            src="{{ media | image_url: width: 1000 }}"
+            srcset="
+              {{ media | image_url: width: 500 }} 500w,
+              {{ media | image_url: width: 800 }} 800w,
+              {{ media | image_url: width: 1000 }} 1000w
+            "
+            sizes="(min-width: 990px) 50vw, 100vw"
+            width="{{ media.width }}"
+            height="{{ media.height }}"
+            loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            alt="{{ media.alt | default: product.title | escape }}"
+            class="nestwell-product__main-image{% if forloop.first %} nestwell-product__main-image--active{% endif %}"
+            data-media-id="{{ media.id }}"
+            data-main-image
+          >
+        {%- else -%}
+          <div class="nestwell-product__main-image nestwell-product__main-image--placeholder"></div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- comment -%} ============ INFO ============ {%- endcomment -%}
+    <div class="nestwell-product__info">
+      {%- if product.type != blank -%}
+        <span class="nestwell-product__category">{{ product.type }}</span>
+      {%- endif -%}
+      <h1 class="nestwell-product__title">{{ product.title }}</h1>
+
+      <div class="nestwell-product__price" data-product-price>
+        {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+          <span class="nestwell-product__price-compare" data-price-compare>{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+          <span class="nestwell-product__price-sale" data-price-current>{{ product.selected_or_first_available_variant.price | money }}</span>
+        {%- else -%}
+          <span data-price-current>{{ product.selected_or_first_available_variant.price | money }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- if product.description != blank -%}
+        <div class="nestwell-product__description">{{ product.description }}</div>
+      {%- endif -%}
+
+      {%- comment -%} ============ VARIANT PICKER ============ {%- endcomment -%}
+      {%- if product.has_only_default_variant == false -%}
+        <variant-selector class="nestwell-product__variant-selector" data-variant-selector>
+          <script type="application/json" data-variant-json>
+            {{ product.variants | json }}
+          </script>
+
+          {%- for option in product.options_with_values -%}
+            <div class="nestwell-product__option" data-option-position="{{ forloop.index }}">
+              <div class="nestwell-product__option-header">
+                <span class="nestwell-product__option-name">{{ option.name }}</span>
+                <span class="nestwell-product__option-value" data-option-label="{{ forloop.index }}">
+                  {{ product.selected_or_first_available_variant.options[forloop.index0] }}
+                </span>
+              </div>
+              <div class="nestwell-product__swatches">
+                {%- for value in option.values -%}
+                  <button
+                    type="button"
+                    class="nestwell-product__swatch{% if product.selected_or_first_available_variant.options[forloop.parentloop.index0] == value %} nestwell-product__swatch--active{% endif %}"
+                    data-swatch
+                    data-option-position="{{ forloop.parentloop.index }}"
+                    data-value="{{ value | escape }}"
+                    aria-label="{{ value }}"
+                  >
+                    <span class="nestwell-product__swatch-ring"></span>
+                    <span class="nestwell-product__swatch-color" style="background-color: {% render 'swatch-color', value: value %};"></span>
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </variant-selector>
+      {%- endif -%}
+
+      {%- comment -%} ============ QUANTITY + ADD TO CART ============ {%- endcomment -%}
+      {%- form 'product', product, class: 'nestwell-product__form', id: 'ProductForm' -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id-input>
+        <div class="nestwell-product__purchase-row">
+          <div class="nestwell-product__qty">
+            <button type="button" class="nestwell-product__qty-btn" data-qty-action="decrease" aria-label="Decrease quantity">−</button>
+            <input type="text" class="nestwell-product__qty-input" value="1" readonly data-qty-input>
+            <button type="button" class="nestwell-product__qty-btn" data-qty-action="increase" aria-label="Increase quantity">+</button>
+          </div>
+          <button
+            type="submit"
+            class="nestwell-product__add-btn"
+            data-add-to-cart-btn
+            {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+          >
+            <span data-add-to-cart-text>
+              {%- if product.selected_or_first_available_variant.available -%}Add to Cart{%- else -%}Sold Out{%- endif -%}
+            </span>
+          </button>
+        </div>
+      {%- endform -%}
+
+      {%- comment -%} ============ ACCORDIONS (metafield-driven) ============ {%- endcomment -%}
+      <div class="nestwell-product__accordions">
+        {%- if product.metafields.custom.materials_care != blank -%}
+          <div class="nestwell-product__accordion-item">
+            <button type="button" class="nestwell-product__accordion-toggle" aria-expanded="false" data-accordion-toggle>
+              <span>Materials &amp; Care</span>
+              <span class="nestwell-product__accordion-icon">+</span>
+            </button>
+            <div class="nestwell-product__accordion-content" data-accordion-content>
+              <div class="nestwell-product__accordion-inner">
+                {{ product.metafields.custom.materials_care.value | newline_to_br }}
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if product.metafields.custom.dimensions != blank -%}
+          <div class="nestwell-product__accordion-item">
+            <button type="button" class="nestwell-product__accordion-toggle" aria-expanded="false" data-accordion-toggle>
+              <span>Dimensions</span>
+              <span class="nestwell-product__accordion-icon">+</span>
+            </button>
+            <div class="nestwell-product__accordion-content" data-accordion-content>
+              <div class="nestwell-product__accordion-inner">
+                {{ product.metafields.custom.dimensions.value | newline_to_br }}
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if product.metafields.custom.shipping_returns != blank -%}
+          <div class="nestwell-product__accordion-item">
+            <button type="button" class="nestwell-product__accordion-toggle" aria-expanded="false" data-accordion-toggle>
+              <span>Shipping &amp; Returns</span>
+              <span class="nestwell-product__accordion-icon">+</span>
+            </button>
+            <div class="nestwell-product__accordion-content" data-accordion-content>
+              <div class="nestwell-product__accordion-inner">
+                {{ product.metafields.custom.shipping_returns.value | newline_to_br }}
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ============ RELATED PRODUCTS ============ {%- endcomment -%}
+  <section class="nestwell-product__related">
+    <div class="nestwell-product__related-header">
+      <h2 class="nestwell-product__related-title">Curated Pairings</h2>
+      <a href="{{ routes.collections_url }}" class="nestwell-product__related-link">Shop All</a>
+    </div>
+    {%- render 'product-recommendations', product: product, section_id: section.id -%}
+  </section>
+</div>
+
+<div
+  class="nestwell-collection__toast-container"
+  id="toast-container-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  aria-live="polite"
+></div>
+
+{% schema %}
+{
+  "name": "Nestwell Product",
+  "settings": []
+}
+{% endschema %}
+
+{% stylesheet %}
+  .nestwell-product {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 20px 0;
+  }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-product { padding-left: 64px; padding-right: 64px; }
+  }
+
+  .nestwell-product__breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0 0 48px;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #454842;
+  }
+
+  .nestwell-product__breadcrumb-list a { color: inherit; text-decoration: none; }
+  .nestwell-product__breadcrumb-list a:hover { color: #171916; }
+  .nestwell-product__breadcrumb-current { color: #171916; font-weight: 600; }
+
+  .nestwell-product__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-product__body { grid-template-columns: 7fr 5fr; gap: 64px; }
+  }
+
+  .nestwell-product__gallery {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 24px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .nestwell-product__gallery { flex-direction: row; }
+  }
+
+  .nestwell-product__thumbnails {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+  }
+
+  @media screen and (min-width: 750px) {
+    .nestwell-product__thumbnails { flex-direction: column; overflow-x: visible; }
+  }
+
+  .nestwell-product__thumb {
+    position: relative;
+    width: 80px;
+    height: 96px;
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .nestwell-product__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .nestwell-product__thumb--active {
+    opacity: 1;
+    box-shadow: 0 0 0 2px #171916;
+  }
+
+  .nestwell-product__main-image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: #e9e8e6;
+    overflow: hidden;
+  }
+
+  .nestwell-product__main-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .nestwell-product__main-image--active { opacity: 1; z-index: 1; }
+
+  .nestwell-product__category {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #454842;
+    margin-bottom: 12px;
+  }
+
+  .nestwell-product__title {
+    margin: 0 0 16px;
+    font-family: 'EB Garamond', serif;
+    font-size: 40px;
+    line-height: 48px;
+    color: #171916;
+  }
+
+  @media screen and (min-width: 750px) {
+    .nestwell-product__title { font-size: 48px; line-height: 56px; }
+  }
+
+  .nestwell-product__price {
+    font-family: 'EB Garamond', serif;
+    font-size: 24px;
+    margin-bottom: 32px;
+    color: #171916;
+  }
+
+  .nestwell-product__price-compare {
+    text-decoration: line-through;
+    color: #767872;
+    margin-right: 8px;
+    font-size: 18px;
+  }
+
+  .nestwell-product__price-sale { color: #ba1a1a; }
+
+  .nestwell-product__description {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    line-height: 28px;
+    color: #454842;
+    margin-bottom: 40px;
+  }
+
+  .nestwell-product__option { margin-bottom: 40px; }
+
+  .nestwell-product__option-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .nestwell-product__option-name {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #171916;
+  }
+
+  .nestwell-product__option-value { font-size: 16px; color: #454842; }
+
+  .nestwell-product__swatches { display: flex; gap: 16px; }
+
+  .nestwell-product__swatch {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .nestwell-product__swatch-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    border: 1px solid #171916;
+    transform: scale(0.85);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .nestwell-product__swatch--active .nestwell-product__swatch-ring {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  .nestwell-product__swatch-color {
+    position: absolute;
+    inset: 4px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+  }
+
+  .nestwell-product__purchase-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .nestwell-product__qty {
+    display: flex;
+    align-items: center;
+    background: #efeeec;
+  }
+
+  .nestwell-product__qty-btn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #171916;
+  }
+
+  .nestwell-product__qty-input {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: none;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    color: #171916;
+  }
+
+  .nestwell-product__add-btn {
+    flex: 1;
+    background: #171916;
+    color: #ffffff;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .nestwell-product__add-btn:hover:not(:disabled) { background: #454842; }
+  .nestwell-product__add-btn:disabled { background: #c6c7c0; cursor: not-allowed; }
+
+  .nestwell-product__accordions { border-top: 1px solid rgba(198,199,192,0.3); }
+
+  .nestwell-product__accordion-item { border-bottom: 1px solid rgba(198,199,192,0.3); }
+
+  .nestwell-product__accordion-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 24px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #171916;
+  }
+
+  .nestwell-product__accordion-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s ease;
+  }
+
+  .nestwell-product__accordion-inner {
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    color: #454842;
+  }
+
+  .nestwell-product__accordion-content > .nestwell-product__accordion-inner { min-height: 0; }
+  .nestwell-product__accordion-inner { padding-bottom: 0; }
+  [data-accordion-toggle][aria-expanded="true"] + .nestwell-product__accordion-content .nestwell-product__accordion-inner {
+    padding-bottom: 24px;
+  }
+
+  .nestwell-product__related { margin-top: 120px; padding: 64px 0; background: #f4f3f1; }
+  .nestwell-product__related-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; padding: 0 20px; }
+
+  @media screen and (min-width: 990px) {
+    .nestwell-product__related-header { padding: 0 64px; }
+  }
+
+  .nestwell-product__related-title { font-family: 'EB Garamond', serif; font-size: 32px; color: #171916; margin: 0; }
+  .nestwell-product__related-link { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #454842; text-decoration: none; }
+
+  .nestwell-product__related-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px 24px;
+    padding: 0 20px;
+  }
+
+  @media screen and (min-width: 600px) { .nestwell-product__related-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media screen and (min-width: 990px) { .nestwell-product__related-grid { grid-template-columns: repeat(4, 1fr); padding: 0 64px; } }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function () {
+    var root = document.querySelector('.nestwell-product');
+    if (!root) return;
+
+    // ---------- Gallery: thumbnail click swaps main image ----------
+    var thumbs = root.querySelectorAll('[data-thumb]');
+    var mainImages = root.querySelectorAll('[data-main-image]');
+
+    function activateMedia(mediaId) {
+      thumbs.forEach(function (t) {
+        t.classList.toggle('nestwell-product__thumb--active', t.getAttribute('data-media-id') === String(mediaId));
+      });
+      mainImages.forEach(function (img) {
+        img.classList.toggle('nestwell-product__main-image--active', img.getAttribute('data-media-id') === String(mediaId));
+      });
+    }
+
+    thumbs.forEach(function (thumb) {
+      thumb.addEventListener('click', function () {
+        activateMedia(thumb.getAttribute('data-media-id'));
+      });
+    });
+
+    // ---------- Variant selector ----------
+    var selector = root.querySelector('[data-variant-selector]');
+    if (selector) {
+      var variantsJson = selector.querySelector('[data-variant-json]');
+      var variants = JSON.parse(variantsJson.textContent);
+      var swatches = selector.querySelectorAll('[data-swatch]');
+      var optionGroups = selector.querySelectorAll('[data-option-position]');
+      var variantIdInput = root.querySelector('[data-variant-id-input]');
+      var priceCurrent = root.querySelector('[data-price-current]');
+      var priceCompare = root.querySelector('[data-price-compare]');
+      var addBtn = root.querySelector('[data-add-to-cart-btn]');
+      var addBtnText = root.querySelector('[data-add-to-cart-text]');
+
+      function currentSelections() {
+        var selections = [];
+        optionGroups.forEach(function (group) {
+          var active = group.querySelector('.nestwell-product__swatch--active');
+          selections.push(active ? active.getAttribute('data-value') : null);
+        });
+        return selections;
+      }
+
+      function findMatchingVariant(selections) {
+        return variants.find(function (v) {
+          return selections.every(function (val, i) {
+            return v['option' + (i + 1)] === val;
+          });
+        });
+      }
+
+      function formatMoney(cents) {
+        return '$' + (cents / 100).toFixed(2);
+      }
+
+      function updateForVariant(variant) {
+        if (!variant) return;
+
+        variantIdInput.value = variant.id;
+
+        if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+          if (!priceCompare) {
+            priceCompare = document.createElement('span');
+            priceCompare.className = 'nestwell-product__price-compare';
+            priceCompare.setAttribute('data-price-compare', '');
+            priceCurrent.parentNode.insertBefore(priceCompare, priceCurrent);
+          }
+          priceCompare.textContent = formatMoney(variant.compare_at_price);
+          priceCompare.style.display = '';
+          priceCurrent.classList.add('nestwell-product__price-sale');
+        } else if (priceCompare) {
+          priceCompare.style.display = 'none';
+          priceCurrent.classList.remove('nestwell-product__price-sale');
+        }
+        priceCurrent.textContent = formatMoney(variant.price);
+
+        if (variant.available) {
+          addBtn.removeAttribute('disabled');
+          addBtnText.textContent = 'Add to Cart';
+        } else {
+          addBtn.setAttribute('disabled', 'disabled');
+          addBtnText.textContent = 'Sold Out';
+        }
+
+        var url = new URL(window.location.href);
+        url.searchParams.set('variant', variant.id);
+        window.history.replaceState({}, '', url);
+
+        if (variant.featured_media) {
+          activateMedia(variant.featured_media.id);
+        }
+      }
+
+      swatches.forEach(function (swatch) {
+        swatch.addEventListener('click', function () {
+          var position = swatch.getAttribute('data-option-position');
+          var group = selector.querySelector('[data-option-position="' + position + '"]');
+          group.querySelectorAll('[data-swatch]').forEach(function (s) {
+            s.classList.remove('nestwell-product__swatch--active');
+          });
+          swatch.classList.add('nestwell-product__swatch--active');
+
+          var label = selector.querySelector('[data-option-label="' + position + '"]');
+          if (label) label.textContent = swatch.getAttribute('data-value');
+
+          var matched = findMatchingVariant(currentSelections());
+          updateForVariant(matched);
+        });
+      });
+    }
+
+    // ---------- Quantity stepper ----------
+    var qtyInput = root.querySelector('[data-qty-input]');
+    root.querySelectorAll('[data-qty-action]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var val = parseInt(qtyInput.value, 10) || 1;
+        if (btn.getAttribute('data-qty-action') === 'increase') {
+          qtyInput.value = val + 1;
+        } else if (val > 1) {
+          qtyInput.value = val - 1;
+        }
+      });
+    });
+
+    // ---------- Accordions ----------
+    root.querySelectorAll('[data-accordion-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var content = btn.nextElementSibling;
+        var icon = btn.querySelector('.nestwell-product__accordion-icon');
+        var isOpen = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+        content.style.gridTemplateRows = isOpen ? '0fr' : '1fr';
+        icon.textContent = isOpen ? '+' : '−';
+      });
+    });
+
+    // ---------- Toast ----------
+    var sectionId = root.getAttribute('data-section-id');
+    var toastContainer = document.querySelector(
+      '.nestwell-collection__toast-container[data-section-id="' + sectionId + '"]'
+    );
+    function showToast(message) {
+      if (!toastContainer) return;
+      var toast = document.createElement('div');
+      toast.className = 'nestwell-collection__toast';
+      toast.textContent = message;
+      toastContainer.appendChild(toast);
+      requestAnimationFrame(function () { toast.classList.add('nestwell-collection__toast--visible'); });
+      setTimeout(function () {
+        toast.classList.remove('nestwell-collection__toast--visible');
+        setTimeout(function () { toast.remove(); }, 300);
+      }, 3000);
+    }
+
+    // ---------- Add to cart (AJAX, with quantity) ----------
+    var form = root.querySelector('#ProductForm');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var variantId = root.querySelector('[data-variant-id-input]').value;
+        var quantity = parseInt(qtyInput.value, 10) || 1;
+
+        fetch(window.routes ? window.routes.cart_add_url : '/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ items: [{ id: variantId, quantity: quantity }] }),
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data.status) {
+              showToast(data.description || 'Could not add to cart');
+              return;
+            }
+            showToast('Added to your cart');
+            document.dispatchEvent(new CustomEvent('cart:updated'));
+          })
+          .catch(function () {
+            showToast('Something went wrong. Please try again.');
+          });
+      });
+    }
+
+    // ---------- Scroll reveal (for related products, once loaded) ----------
+    function observeReveal(container) {
+      var targets = container.querySelectorAll('.observe-fade-up');
+      if (!targets.length) return;
+      var observer = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      targets.forEach(function (el) { observer.observe(el); });
+    }
+
+    // ---------- Product recommendations fetch ----------
+    var recWrap = root.querySelector('product-recommendations');
+    if (recWrap) {
+      var url = recWrap.getAttribute('data-url');
+      fetch(url)
+        .then(function (res) { return res.text(); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var content = doc.querySelector('.nestwell-product__related-grid');
+          if (content) {
+            recWrap.innerHTML = '';
+            recWrap.appendChild(content);
+            observeReveal(recWrap);
+          } else {
+            recWrap.remove();
+          }
+        })
+        .catch(function () {
+          recWrap.remove();
+        });
+    }
+  });
+{% endjavascript %}

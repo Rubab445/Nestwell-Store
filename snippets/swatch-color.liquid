@@ -1,0 +1,29 @@
+{%- comment -%}
+  Maps a variant option value (e.g. "Brushed Brass") to a hex color for swatches.
+  Accepts: value (string)
+  Usage: {% render 'swatch-color', value: option_value %}
+  Add new finish/color names below as your catalog grows.
+{%- endcomment -%}
+
+{%- case value -%}
+  {%- when 'Brushed Brass' -%}
+    #B5A642
+  {%- when 'Matte Black' -%}
+    #2A2B2A
+  {%- when 'Polished Nickel' -%}
+    #E5E4E2
+  {%- when 'Antique Bronze' -%}
+    #665D50
+  {%- when 'Chrome' -%}
+    #C4C4C4
+  {%- when 'White' -%}
+    #F5F5F0
+  {%- when 'Black' -%}
+    #1A1A1A
+  {%- when 'Natural Oak' -%}
+    #C8A165
+  {%- when 'Walnut' -%}
+    #5B3A29
+  {%- else -%}
+    #CCCCCC
+{%- endcase -%}
