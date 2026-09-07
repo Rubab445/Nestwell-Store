@@ -11,6 +11,18 @@
   "sections": {
     "main": {
       "type": "nestwell-contact",
+      "blocks": {
+        "faq_ALEBKG": {
+          "type": "faq",
+          "settings": {
+            "question": "What is your return policy for furniture",
+            "answer": "We accept returns on non-custom furniture within 30 days of delivery. The item must be in its original condition. Please note that a 15% restocking fee applies, and original delivery fees are non-refundable. Custom or made-to-order pieces are final sale"
+          }
+        }
+      },
+      "block_order": [
+        "faq_ALEBKG"
+      ],
       "settings": {
         "header_text": "Get in Touch",
         "header_description": "",
