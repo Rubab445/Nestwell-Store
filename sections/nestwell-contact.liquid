@@ -148,16 +148,13 @@
 
         {%- if section.settings.map_image != blank -%}
           <div class="nestwell-contact__map observe-fade-up">
-            {{
-              section.settings.map_image
-              | image_url: width: 900
-              | image_tag: loading: 'lazy', alt: 'Map to '
-              | append: section.settings.store_name
-            }}
+            {%- assign map_alt = 'Map to ' | append: section.settings.store_name -%}
+            {{ section.settings.map_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: map_alt }}
             {%- if section.settings.store_address != blank -%}
               {%- assign directions_address = section.settings.store_address
                 | newline_to_br
                 | replace: '<br />', ', '
+                | strip_newlines
               -%}
 
               class="nestwell-contact__directions" href="https://www.google.com/maps/dir/?api=1&destination=
