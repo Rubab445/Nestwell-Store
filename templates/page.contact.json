@@ -1,8 +1,31 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
-      "type": "nestwell-contact"
+      "type": "nestwell-contact",
+      "settings": {
+        "header_text": "Get in Touch",
+        "header_description": "",
+        "store_name": "Nestwell Store",
+        "store_address": "18318 Lomond Blvd\nBeachwood\nOH 44122",
+        "store_hours": "Mon — Fri: 10am — 7pm\nSaturday: 11am — 6pm\nSunday: Closed",
+        "store_phone": "(216) 555-0148",
+        "store_email": "digitaldiary697@gmail.com",
+        "map_image": "shopify://shop_images/map.png",
+        "faq_title": "Frequently Asked Questions",
+        "faq_description": ""
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }
