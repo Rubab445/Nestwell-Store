@@ -1,0 +1,16 @@
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+  <div class="nestwell-product__related-grid">
+    {%- for product in recommendations.products -%}
+      <div class="nestwell-product__related-item observe-fade-up" style="transition-delay: {{ forloop.index0 | modulo: 4 | times: 100 }}ms;">
+        {%- render 'product-card', product: product -%}
+      </div>
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Nestwell Related products",
+  "settings": []
+}
+{% endschema %}
