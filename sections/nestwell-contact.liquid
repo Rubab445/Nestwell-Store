@@ -5,7 +5,7 @@
     <div class="nestwell-contact__grid">
       <!-- Left column: form -->
       <div class="nestwell-contact__form-col">
-        <div class="nestwell-contact__intro observe-fade-up">
+        <div class="nestwell-contact__intro">
           <h1 class="nestwell-contact__title">{{ section.settings.header_text | default: 'Get in Touch' }}</h1>
           {%- if section.settings.header_description != blank -%}
             <p class="nestwell-contact__subtitle">{{ section.settings.header_description }}</p>
@@ -34,7 +34,7 @@
             </div>
           {%- endif -%}
 
-          <div class="nestwell-contact__form-wrap observe-fade-up">
+          <div class="nestwell-contact__form-wrap">
             <div class="nestwell-contact__row">
               <div class="nestwell-contact__field">
                 <input
@@ -43,7 +43,7 @@
                   id="ContactFormName"
                   name="contact[name]"
                   placeholder="Name"
-                  value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                  value="{%- if form.name -%}{{ form.name }}{%- elsif customer -%}{{ customer.name }}{%- endif -%}"
                   required
                 >
                 <label class="nestwell-contact__label" for="ContactFormName">Name</label>
@@ -55,7 +55,7 @@
                   id="ContactFormEmail"
                   name="contact[email]"
                   placeholder="Email Address"
-                  value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                  value="{%- if form.email -%}{{ form.email }}{%- elsif customer -%}{{ customer.email }}{%- endif -%}"
                   autocomplete="email"
                   autocapitalize="off"
                   required
@@ -71,7 +71,7 @@
                 id="ContactFormSubject"
                 name="contact[subject]"
                 placeholder="Subject"
-                value="{% if form.subject %}{{ form.subject }}{% endif %}"
+                value="{%- if form.subject -%}{{ form.subject }}{%- endif -%}"
               >
               <label class="nestwell-contact__label" for="ContactFormSubject">Subject</label>
             </div>
@@ -84,7 +84,7 @@
                 placeholder="Message"
                 rows="4"
                 required
-              >{% if form.body %}{{ form.body }}{% endif %}</textarea>
+              >{%- if form.body -%}{{ form.body }}{%- endif -%}</textarea>
               <label class="nestwell-contact__label" for="ContactFormMessage">Message</label>
             </div>
 
@@ -97,7 +97,7 @@
 
       <!-- Right column: store info + map -->
       <div class="nestwell-contact__info-col">
-        <div class="nestwell-contact__info-card observe-fade-up">
+        <div class="nestwell-contact__info-card">
           {%- if section.settings.store_name != blank -%}
             <div class="nestwell-contact__info-block">
               <h3 class="nestwell-contact__info-heading">{{ section.settings.store_name }}</h3>
@@ -147,7 +147,7 @@
         </div>
 
         {%- if section.settings.map_image != blank -%}
-          <div class="nestwell-contact__map observe-fade-up">
+          <div class="nestwell-contact__map">
             {%- assign map_alt = 'Map to ' | append: section.settings.store_name -%}
             {{ section.settings.map_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: map_alt }}
             {%- if section.settings.store_address != blank -%}
@@ -156,10 +156,13 @@
                 | replace: '<br />', ', '
                 | strip_newlines
               -%}
-
-              class="nestwell-contact__directions" href="https://www.google.com/maps/dir/?api=1&destination=
-              {{- directions_address | url_encode -}}
-              " target="_blank" rel="noopener" > Get Directions <span class="nestwell-contact__directions-icon">↗</span>
+              <a
+                class="nestwell-contact__directions"
+                href="https://www.google.com/maps/dir/?api=1&destination={{- directions_address | url_encode -}}"
+                target="_blank"
+                rel="noopener"
+              >
+                Get Directions <span class="nestwell-contact__directions-icon">↗</span>
               </a>
             {%- endif -%}
           </div>
@@ -172,7 +175,7 @@
 <!-- FAQ -->
 {%- if section.blocks.size > 0 -%}
   <section class="nestwell-faq">
-    <div class="nestwell-faq__intro observe-fade-up">
+    <div class="nestwell-faq__intro">
       <h2 class="nestwell-faq__title">{{ section.settings.faq_title | default: 'Frequently Asked Questions' }}</h2>
       {%- if section.settings.faq_description != blank -%}
         <p class="nestwell-faq__subtitle">{{ section.settings.faq_description }}</p>
@@ -273,9 +276,13 @@
     color: #171916;
     transition: border-color 0.2s ease;
   }
+  /* Hide the native placeholder so it doesn't overlap the floating label */
+  .nestwell-contact__input::placeholder {
+    color: transparent;
+  }
   .nestwell-contact__input:focus {
     outline: none;
-    border-bottom-color: #454842;
+    
   }
   .nestwell-contact__textarea {
     resize: none;
@@ -493,7 +500,7 @@
     margin: 0;
     font-family: 'DM Sans', sans-serif;
     color: #454842;
-    max-width: 42rem;
+    max-width: 80rem;
   }
 {% endstylesheet %}
 
