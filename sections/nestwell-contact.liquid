@@ -1,0 +1,566 @@
+{%- comment -%} Nestwell — Contact page section {%- endcomment -%}
+
+{%- form 'contact', id: 'ContactForm' -%}
+  <section class="nestwell-contact">
+    <div class="nestwell-contact__grid">
+      <!-- Left column: form -->
+      <div class="nestwell-contact__form-col">
+        <div class="nestwell-contact__intro observe-fade-up">
+          <h1 class="nestwell-contact__title">{{ section.settings.header_text | default: 'Get in Touch' }}</h1>
+          {%- if section.settings.header_description != blank -%}
+            <p class="nestwell-contact__subtitle">{{ section.settings.header_description }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- if form.posted_successfully? -%}
+          <div class="nestwell-contact__success" role="status">
+            <p>Thanks — we'll be in touch soon.</p>
+          </div>
+        {%- else -%}
+          {%- if form.errors -%}
+            <div class="nestwell-contact__errors" role="alert">
+              <ul>
+                {%- for field in form.errors -%}
+                  <li>
+                    {%- if field == 'form' -%}
+                      {{ form.errors.messages[field] }}
+                    {%- else -%}
+                      {{ form.errors.translated_fields[field] | capitalize }}
+                      {{ form.errors.messages[field] }}
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          <div class="nestwell-contact__form-wrap observe-fade-up">
+            <div class="nestwell-contact__row">
+              <div class="nestwell-contact__field">
+                <input
+                  class="nestwell-contact__input"
+                  type="text"
+                  id="ContactFormName"
+                  name="contact[name]"
+                  placeholder="Name"
+                  value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                  required
+                >
+                <label class="nestwell-contact__label" for="ContactFormName">Name</label>
+              </div>
+              <div class="nestwell-contact__field">
+                <input
+                  class="nestwell-contact__input"
+                  type="email"
+                  id="ContactFormEmail"
+                  name="contact[email]"
+                  placeholder="Email Address"
+                  value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                  autocomplete="email"
+                  autocapitalize="off"
+                  required
+                >
+                <label class="nestwell-contact__label" for="ContactFormEmail">Email Address</label>
+              </div>
+            </div>
+
+            <div class="nestwell-contact__field">
+              <input
+                class="nestwell-contact__input"
+                type="text"
+                id="ContactFormSubject"
+                name="contact[subject]"
+                placeholder="Subject"
+                value="{% if form.subject %}{{ form.subject }}{% endif %}"
+              >
+              <label class="nestwell-contact__label" for="ContactFormSubject">Subject</label>
+            </div>
+
+            <div class="nestwell-contact__field">
+              <textarea
+                class="nestwell-contact__input nestwell-contact__textarea"
+                id="ContactFormMessage"
+                name="contact[body]"
+                placeholder="Message"
+                rows="4"
+                required
+              >{% if form.body %}{{ form.body }}{% endif %}</textarea>
+              <label class="nestwell-contact__label" for="ContactFormMessage">Message</label>
+            </div>
+
+            <button type="submit" class="nestwell-contact__submit">
+              <span class="nestwell-contact__submit-text">Send Message</span>
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Right column: store info + map -->
+      <div class="nestwell-contact__info-col">
+        <div class="nestwell-contact__info-card observe-fade-up">
+          {%- if section.settings.store_name != blank -%}
+            <div class="nestwell-contact__info-block">
+              <h3 class="nestwell-contact__info-heading">{{ section.settings.store_name }}</h3>
+              {%- if section.settings.store_address != blank -%}
+                <p class="nestwell-contact__info-text">{{ section.settings.store_address | newline_to_br }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.store_hours != blank -%}
+            <div class="nestwell-contact__info-block">
+              <h3 class="nestwell-contact__info-heading">Hours</h3>
+              <ul class="nestwell-contact__hours">
+                {%- assign hour_lines = section.settings.store_hours | newline_to_br | split: '<br />' -%}
+                {%- for line in hour_lines -%}
+                  {%- assign parts = line | split: ':' -%}
+                  {%- if parts.size == 2 -%}
+                    <li>
+                      <span>{{ parts[0] | strip }}</span><span>{{ parts[1] | strip }}</span>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.store_phone != blank or section.settings.store_email != blank -%}
+            <div class="nestwell-contact__info-block">
+              <h3 class="nestwell-contact__info-heading">Direct</h3>
+              <p class="nestwell-contact__info-text">
+                {%- if section.settings.store_phone != blank -%}
+                  <a
+                    class="nestwell-contact__info-link"
+                    href="tel:{{ section.settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}"
+                  >
+                    {{- section.settings.store_phone -}}
+                  </a>
+                {%- endif -%}
+                {%- if section.settings.store_email != blank -%}
+                  <a class="nestwell-contact__info-link" href="mailto:{{ section.settings.store_email }}">
+                    {{- section.settings.store_email -}}
+                  </a>
+                {%- endif -%}
+              </p>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.map_image != blank -%}
+          <div class="nestwell-contact__map observe-fade-up">
+            {{
+              section.settings.map_image
+              | image_url: width: 900
+              | image_tag: loading: 'lazy', alt: 'Map to '
+              | append: section.settings.store_name
+            }}
+            {%- if section.settings.store_address != blank -%}
+              {%- assign directions_address = section.settings.store_address
+                | newline_to_br
+                | replace: '<br />', ', '
+              -%}
+
+              class="nestwell-contact__directions" href="https://www.google.com/maps/dir/?api=1&destination=
+              {{- directions_address | url_encode -}}
+              " target="_blank" rel="noopener" > Get Directions <span class="nestwell-contact__directions-icon">↗</span>
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endform -%}
+
+<!-- FAQ -->
+{%- if section.blocks.size > 0 -%}
+  <section class="nestwell-faq">
+    <div class="nestwell-faq__intro observe-fade-up">
+      <h2 class="nestwell-faq__title">{{ section.settings.faq_title | default: 'Frequently Asked Questions' }}</h2>
+      {%- if section.settings.faq_description != blank -%}
+        <p class="nestwell-faq__subtitle">{{ section.settings.faq_description }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="nestwell-faq__list" data-faq-accordion>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'faq' -%}
+          <div class="nestwell-faq__item" {{ block.shopify_attributes }}>
+            <button class="nestwell-faq__question" type="button" data-faq-toggle aria-expanded="false">
+              <span>{{ block.settings.question }}</span>
+              <span class="nestwell-faq__icon" aria-hidden="true">+</span>
+            </button>
+            <div class="nestwell-faq__answer" data-faq-panel>
+              <p>{{ block.settings.answer }}</p>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .nestwell-contact {
+    width: 100%;
+    padding: 64px 20px 120px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .nestwell-contact__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  @media (min-width: 1024px) {
+    .nestwell-contact__grid {
+      grid-template-columns: 7fr 5fr;
+      gap: 64px;
+      padding: 0 44px;
+    }
+  }
+
+  .nestwell-contact__title {
+    font-family: 'EB Garamond', serif;
+    font-size: 40px;
+    line-height: 48px;
+    color: #171916;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+  @media (min-width: 1024px) {
+    .nestwell-contact__title {
+      font-size: 64px;
+      line-height: 72px;
+    }
+  }
+  .nestwell-contact__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    line-height: 28px;
+    color: #454842;
+    max-width: 32rem;
+    margin: 0;
+  }
+
+  .nestwell-contact__form-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 640px;
+    margin-top: 48px;
+  }
+  .nestwell-contact__row {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  @media (min-width: 640px) {
+    .nestwell-contact__row {
+      flex-direction: row;
+    }
+  }
+
+  .nestwell-contact__field {
+    position: relative;
+    flex: 1;
+  }
+  .nestwell-contact__input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #c6c7c0;
+    padding: 12px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: #171916;
+    transition: border-color 0.2s ease;
+  }
+  .nestwell-contact__input:focus {
+    outline: none;
+    border-bottom-color: #454842;
+  }
+  .nestwell-contact__textarea {
+    resize: none;
+  }
+  .nestwell-contact__label {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: #454842;
+    pointer-events: none;
+    transition: all 0.2s ease;
+  }
+  .nestwell-contact__input:focus + .nestwell-contact__label,
+  .nestwell-contact__input:not(:placeholder-shown) + .nestwell-contact__label {
+    top: -16px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #454842;
+  }
+
+  .nestwell-contact__submit {
+    align-self: flex-start;
+    background: #171916;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 16px 48px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+  .nestwell-contact__submit:hover {
+    opacity: 0.9;
+  }
+
+  .nestwell-contact__success {
+    margin-top: 48px;
+    padding: 24px;
+    background: #f4f3f1;
+    font-family: 'DM Sans', sans-serif;
+    color: #171916;
+  }
+  .nestwell-contact__errors {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: #ffdad6;
+    color: #ba1a1a;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+  }
+  .nestwell-contact__errors ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .nestwell-contact__info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+  .nestwell-contact__info-card {
+    background: #f4f3f1;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  @media (min-width: 1024px) {
+    .nestwell-contact__info-card {
+      padding: 48px;
+    }
+  }
+  .nestwell-contact__info-heading {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #171916;
+    margin: 0 0 16px;
+  }
+  .nestwell-contact__info-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    line-height: 28px;
+    color: #454842;
+    margin: 0;
+  }
+  .nestwell-contact__info-link {
+    display: block;
+    color: #454842;
+    text-decoration: none;
+    margin-bottom: 4px;
+  }
+  .nestwell-contact__info-link:hover {
+    color: #171916;
+  }
+  .nestwell-contact__hours {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    color: #454842;
+  }
+  .nestwell-contact__hours li {
+    display: flex;
+    justify-content: space-between;
+    max-width: 240px;
+  }
+
+  .nestwell-contact__map {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background: #e9e8e6;
+    overflow: hidden;
+  }
+  .nestwell-contact__map img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .nestwell-contact__directions {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: #faf9f7;
+    color: #171916;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 8px 24px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .nestwell-contact__directions:hover {
+    background: #171916;
+    color: #fff;
+  }
+
+  .nestwell-faq {
+    width: 100%;
+    padding: 120px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .nestwell-faq__intro {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .nestwell-faq__title {
+    font-family: 'EB Garamond', serif;
+    font-size: 40px;
+    color: #171916;
+    margin: 0 0 16px;
+  }
+  .nestwell-faq__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    color: #454842;
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+  .nestwell-faq__item {
+    border-top: 1px solid rgba(198, 199, 192, 0.3);
+  }
+  .nestwell-faq__item:last-child {
+    border-bottom: 1px solid rgba(198, 199, 192, 0.3);
+  }
+  .nestwell-faq__question {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    font-family: 'EB Garamond', serif;
+    font-size: 24px;
+    color: #171916;
+  }
+  .nestwell-faq__icon {
+    font-size: 20px;
+    color: #454842;
+    transition: transform 0.3s ease;
+  }
+  .nestwell-faq__question[aria-expanded='true'] .nestwell-faq__icon {
+    transform: rotate(45deg);
+  }
+  .nestwell-faq__answer {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease;
+  }
+  .nestwell-faq__answer p {
+    padding-bottom: 24px;
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    color: #454842;
+    max-width: 42rem;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('click', function (e) {
+    var toggle = e.target.closest('[data-faq-toggle]');
+    if (!toggle) return;
+
+    var accordion = toggle.closest('[data-faq-accordion]');
+    var panel = toggle.nextElementSibling;
+    var isOpen = toggle.getAttribute('aria-expanded') === 'true';
+
+    accordion.querySelectorAll('[data-faq-toggle]').forEach(function (btn) {
+      if (btn !== toggle) {
+        btn.setAttribute('aria-expanded', 'false');
+        btn.nextElementSibling.style.maxHeight = '0px';
+      }
+    });
+
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    panel.style.maxHeight = isOpen ? '0px' : panel.scrollHeight + 'px';
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Contact",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "header_text", "label": "Heading", "default": "Get in Touch" },
+    { "type": "textarea", "id": "header_description", "label": "Description" },
+
+    { "type": "header", "content": "Store info" },
+    { "type": "text", "id": "store_name", "label": "Store name", "default": "Flagship Store" },
+    { "type": "textarea", "id": "store_address", "label": "Address (one line per row)" },
+    {
+      "type": "textarea",
+      "id": "store_hours",
+      "label": "Hours (format: Day: time, one per line)",
+      "info": "e.g. Mon — Fri: 10am — 7pm"
+    },
+    { "type": "text", "id": "store_phone", "label": "Phone" },
+    { "type": "text", "id": "store_email", "label": "Email" },
+    { "type": "image_picker", "id": "map_image", "label": "Map image" },
+
+    { "type": "header", "content": "FAQ" },
+    { "type": "text", "id": "faq_title", "label": "FAQ heading", "default": "Frequently Asked Questions" },
+    { "type": "textarea", "id": "faq_description", "label": "FAQ description" }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ item",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "textarea", "id": "answer", "label": "Answer" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact",
+      "blocks": [{ "type": "faq" }, { "type": "faq" }, { "type": "faq" }, { "type": "faq" }]
+    }
+  ]
+}
+{% endschema %}

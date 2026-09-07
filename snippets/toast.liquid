@@ -1,0 +1,12 @@
+{%- comment -%}
+  Renders a toast notification container, shared across templates.
+  Accepts: section_id
+  Usage: {% render 'toast', section_id: section.id %}
+{%- endcomment -%}
+
+<div
+  class="nestwell-toast-container"
+  id="toast-container-{{ section_id }}"
+  data-section-id="{{ section_id }}"
+  aria-live="polite"
+></div>

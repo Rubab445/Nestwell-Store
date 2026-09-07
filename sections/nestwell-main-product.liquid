@@ -4,10 +4,22 @@
       <li><a href="{{ routes.root_url }}">Home</a></li>
       <li><span class="nestwell-product__breadcrumb-chevron">/</span></li>
       <li><a href="{{ routes.collections_url }}">Shop</a></li>
-      {%- if product.collections.first -%}
+      {%- liquid
+        assign breadcrumb_collection = collection
+        if breadcrumb_collection == blank
+          for c in product.collections
+            unless c.title == 'Automated Collection'
+              assign breadcrumb_collection = c
+              break
+            endunless
+          endfor
+        endif
+      -%}
+
+      {%- if breadcrumb_collection != blank -%}
         <li><span class="nestwell-product__breadcrumb-chevron">/</span></li>
         <li>
-          <a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>
+          <a href="{{ breadcrumb_collection.url }}">{{ breadcrumb_collection.title }}</a>
         </li>
       {%- endif -%}
       <li><span class="nestwell-product__breadcrumb-chevron">/</span></li>
@@ -243,15 +255,16 @@
       <h2 class="nestwell-product__related-title">Curated Pairings</h2>
       <a href="{{ routes.collections_url }}" class="nestwell-product__related-link">Shop All</a>
     </div>
-    {%- render 'product-recommendations', product: product, section_id: section.id -%}
+    <product-recommendations
+      class="nestwell-product__related-grid-wrap"
+      data-url="{{ routes.product_recommendations_url }}?section_id=nestwell-product-recommendations&product_id={{ product.id }}&limit=4"
+      data-section-id="{{ section.id }}"
+    ></product-recommendations>
   </section>
 </div>
 
 <div
-  class="nestwell-collection__toast-container"
-  id="toast-container-{{ section.id }}"
-  data-section-id="{{ section.id }}"
-  aria-live="polite"
+  {%- render 'toast', section_id: section.id -%}
 ></div>
 
 {% schema %}
@@ -281,7 +294,7 @@
     gap: 8px;
     list-style: none;
     margin: 0 0 48px;
-    padding: 0;
+    padding: 30px 0 0;
     font-family: 'DM Sans', sans-serif;
     font-size: 12px;
     font-weight: 600;
@@ -804,20 +817,18 @@
 
     // ---------- Toast ----------
     var sectionId = root.getAttribute('data-section-id');
-    var toastContainer = document.querySelector(
-      '.nestwell-collection__toast-container[data-section-id="' + sectionId + '"]'
-    );
+    var toastContainer = document.querySelector('.nestwell-toast-container[data-section-id="' + sectionId + '"]');
     function showToast(message) {
       if (!toastContainer) return;
       var toast = document.createElement('div');
-      toast.className = 'nestwell-collection__toast';
+      toast.className = 'nestwell-toast';
       toast.textContent = message;
       toastContainer.appendChild(toast);
       requestAnimationFrame(function () {
-        toast.classList.add('nestwell-collection__toast--visible');
+        toast.classList.add('nestwell-toast--visible');
       });
       setTimeout(function () {
-        toast.classList.remove('nestwell-collection__toast--visible');
+        toast.classList.remove('nestwell-toast--visible');
         setTimeout(function () {
           toast.remove();
         }, 300);
