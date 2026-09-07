@@ -14,14 +14,42 @@
       "blocks": {
         "faq_ALEBKG": {
           "type": "faq",
+          "name": "FAQ 1",
           "settings": {
-            "question": "What is your return policy for furniture",
+            "question": "What is your return policy for furniture?",
             "answer": "We accept returns on non-custom furniture within 30 days of delivery. The item must be in its original condition. Please note that a 15% restocking fee applies, and original delivery fees are non-refundable. Custom or made-to-order pieces are final sale"
+          }
+        },
+        "faq_t6qQaV": {
+          "type": "faq",
+          "name": "FAQ 2",
+          "settings": {
+            "question": "Do you offer fabric swatches?",
+            "answer": "Yes, we offer complimentary fabric and leather swatches for all our upholstery collections. You can request up to 5 swatches at a time through our swatch request page, which usually arrive within 3-5 business days."
+          }
+        },
+        "faq_a4y3iV": {
+          "type": "faq",
+          "name": "FAQ 3",
+          "settings": {
+            "question": "How do I apply for the Trade Program?",
+            "answer": "Interior designers, architects, and industry professionals can apply for our Trade Program via the Trade link in the footer. You will need to provide your business license and resale certificate. Approved members receive exclusive pricing, dedicated support, and tax-exempt purchasing."
+          }
+        },
+        "faq_er9XNn": {
+          "type": "faq",
+          "name": "FAQ 4",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "Currently, we ship small decor items internationally. However, large furniture deliveries are restricted to the contiguous United States and Canada. If you require international freight forwarding for larger pieces, please contact our support team."
           }
         }
       },
       "block_order": [
-        "faq_ALEBKG"
+        "faq_ALEBKG",
+        "faq_t6qQaV",
+        "faq_a4y3iV",
+        "faq_er9XNn"
       ],
       "settings": {
         "header_text": "Get in Touch",
