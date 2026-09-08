@@ -82,6 +82,42 @@
     },
     "gallery": {
       "type": "nestwell-about-gallery",
+      "blocks": {
+        "photo_JkThdH": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/ar4.jpg",
+            "alt": "Sofa"
+          }
+        },
+        "photo_N9ixVH": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/ar2.jpg",
+            "alt": "Table"
+          }
+        },
+        "photo_x97Qwz": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/ar3.jpg",
+            "alt": "Table"
+          }
+        },
+        "photo_R3Hyr8": {
+          "type": "photo",
+          "settings": {
+            "image": "shopify://shop_images/ar1.jpg",
+            "alt": "Architecture"
+          }
+        }
+      },
+      "block_order": [
+        "photo_JkThdH",
+        "photo_N9ixVH",
+        "photo_x97Qwz",
+        "photo_R3Hyr8"
+      ],
       "settings": {}
     },
     "cta": {
