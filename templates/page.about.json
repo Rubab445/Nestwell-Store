@@ -11,7 +11,10 @@
   "sections": {
     "hero": {
       "type": "nestwell-about-hero",
-      "settings": {}
+      "settings": {
+        "image": "shopify://shop_images/about.jpg",
+        "heading": "Crafting Sanctuaries of Serenity and Tactile Luxury"
+      }
     },
     "story": {
       "type": "nestwell-about-story",
@@ -19,6 +22,7 @@
         "s1": {
           "type": "story_block",
           "settings": {
+            "image": "shopify://shop_images/about2.jpg",
             "heading": "The Art of Stillness",
             "text": "In a world that constantly demands attention, we believe the home should be a retreat — a place where the mind can rest and the senses can recalibrate."
           }
@@ -26,6 +30,7 @@
         "s2": {
           "type": "story_block",
           "settings": {
+            "image": "shopify://shop_images/about3.jpg",
             "heading": "Tactile Elegance",
             "text": "We source materials that speak to the hand as much as the eye. From European flax linens to sustainably harvested hardwoods, every piece is chosen for its texture and longevity."
           }
@@ -70,7 +75,10 @@
         "v2",
         "v3"
       ],
-      "settings": {}
+      "settings": {
+        "eyebrow": "Our Ethos",
+        "heading": "Intentionally Crafted"
+      }
     },
     "gallery": {
       "type": "nestwell-about-gallery",
@@ -78,7 +86,11 @@
     },
     "cta": {
       "type": "nestwell-about-cta",
-      "settings": {}
+      "settings": {
+        "heading": "Begin Building Your Sanctuary",
+        "button_label": "Return to Collection",
+        "button_link": ""
+      }
     }
   },
   "order": [
