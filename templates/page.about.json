@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "hero": { "type": "nestwell-about-hero", "settings": {} },
+    "story": {
+      "type": "nestwell-about-story",
+      "blocks": {
+        "s1": {
+          "type": "story_block",
+          "settings": {
+            "heading": "The Art of Stillness",
+            "text": "In a world that constantly demands attention, we believe the home should be a retreat — a place where the mind can rest and the senses can recalibrate."
+          }
+        },
+        "s2": {
+          "type": "story_block",
+          "settings": {
+            "heading": "Tactile Elegance",
+            "text": "We source materials that speak to the hand as much as the eye. From European flax linens to sustainably harvested hardwoods, every piece is chosen for its texture and longevity."
+          }
+        }
+      },
+      "block_order": ["s1", "s2"]
+    },
+    "values": {
+      "type": "nestwell-about-values",
+      "blocks": {
+        "v1": { "type": "value", "settings": { "icon": "eco", "heading": "Sustainably Sourced", "text": "Partnering with ethical workshops and utilizing renewable materials to tread lightly on the earth." } },
+        "v2": { "type": "value", "settings": { "icon": "architecture", "heading": "Handcrafted Precision", "text": "Every curve and joint is meticulously shaped by artisans who carry generations of knowledge." } },
+        "v3": { "type": "value", "settings": { "icon": "local_shipping", "heading": "Curated Delivery", "text": "White-glove service ensures your sanctuary is assembled with care, precisely when you need it." } }
+      },
+      "block_order": ["v1", "v2", "v3"]
+    },
+    "gallery": { "type": "nestwell-about-gallery", "blocks": {}, "block_order": [] },
+    "cta": { "type": "nestwell-about-cta", "settings": {} }
+  },
+  "order": ["hero", "story", "values", "gallery", "cta"]
+}

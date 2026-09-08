@@ -6,9 +6,9 @@
       <!-- Left column: form -->
       <div class="nestwell-contact__form-col">
         <div class="nestwell-contact__intro">
-          <h1 class="nestwell-contact__title">{{ section.settings.header_text | default: 'Get in Touch' }}</h1>
+          <h1 class="nestwell-contact__title">{{ section.settings.header_text | default: 'Get in Touch' | escape }}</h1>
           {%- if section.settings.header_description != blank -%}
-            <p class="nestwell-contact__subtitle">{{ section.settings.header_description }}</p>
+            <p class="nestwell-contact__subtitle">{{ section.settings.header_description | escape }}</p>
           {%- endif -%}
         </div>
 
@@ -44,6 +44,7 @@
                   name="contact[name]"
                   placeholder="Name"
                   value="{%- if form.name -%}{{ form.name }}{%- elsif customer -%}{{ customer.name }}{%- endif -%}"
+                  autocomplete="off"
                   required
                 >
                 <label class="nestwell-contact__label" for="ContactFormName">Name</label>
@@ -72,6 +73,7 @@
                 name="contact[subject]"
                 placeholder="Subject"
                 value="{%- if form.subject -%}{{ form.subject }}{%- endif -%}"
+                autocomplete="off"
               >
               <label class="nestwell-contact__label" for="ContactFormSubject">Subject</label>
             </div>
@@ -100,9 +102,9 @@
         <div class="nestwell-contact__info-card">
           {%- if section.settings.store_name != blank -%}
             <div class="nestwell-contact__info-block">
-              <h3 class="nestwell-contact__info-heading">{{ section.settings.store_name }}</h3>
+              <h3 class="nestwell-contact__info-heading">{{ section.settings.store_name | escape }}</h3>
               {%- if section.settings.store_address != blank -%}
-                <p class="nestwell-contact__info-text">{{ section.settings.store_address | newline_to_br }}</p>
+                <p class="nestwell-contact__info-text">{{ section.settings.store_address | escape | newline_to_br }}</p>
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -111,12 +113,12 @@
             <div class="nestwell-contact__info-block">
               <h3 class="nestwell-contact__info-heading">Hours</h3>
               <ul class="nestwell-contact__hours">
-                {%- assign hour_lines = section.settings.store_hours | newline_to_br | split: '<br />' -%}
+                {%- assign hour_lines = section.settings.store_hours | split: newline -%}
                 {%- for line in hour_lines -%}
                   {%- assign parts = line | split: ':' -%}
                   {%- if parts.size == 2 -%}
                     <li>
-                      <span>{{ parts[0] | strip }}</span><span>{{ parts[1] | strip }}</span>
+                      <span>{{ parts[0] | strip | escape }}</span><span>{{ parts[1] | strip | escape }}</span>
                     </li>
                   {%- endif -%}
                 {%- endfor -%}
@@ -129,16 +131,15 @@
               <h3 class="nestwell-contact__info-heading">Direct</h3>
               <p class="nestwell-contact__info-text">
                 {%- if section.settings.store_phone != blank -%}
-                  <a
-                    class="nestwell-contact__info-link"
-                    href="tel:{{ section.settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}"
-                  >
-                    {{- section.settings.store_phone -}}
+                  class="nestwell-contact__info-link" href="tel:
+                  {{- section.settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | escape -}}
+                  " >
+                  {{- section.settings.store_phone | escape -}}
                   </a>
                 {%- endif -%}
                 {%- if section.settings.store_email != blank -%}
-                  <a class="nestwell-contact__info-link" href="mailto:{{ section.settings.store_email }}">
-                    {{- section.settings.store_email -}}
+                  <a class="nestwell-contact__info-link" href="mailto:{{ section.settings.store_email | escape }}">
+                    {{- section.settings.store_email | escape -}}
                   </a>
                 {%- endif -%}
               </p>
@@ -148,7 +149,7 @@
 
         {%- if section.settings.map_image != blank -%}
           <div class="nestwell-contact__map">
-            {%- assign map_alt = 'Map to ' | append: section.settings.store_name -%}
+            {%- assign map_alt = 'Map to ' | append: section.settings.store_name | escape -%}
             {{ section.settings.map_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: map_alt }}
             {%- if section.settings.store_address != blank -%}
               {%- assign directions_address = section.settings.store_address
@@ -156,13 +157,10 @@
                 | replace: '<br />', ', '
                 | strip_newlines
               -%}
-              <a
-                class="nestwell-contact__directions"
-                href="https://www.google.com/maps/dir/?api=1&destination={{- directions_address | url_encode -}}"
-                target="_blank"
-                rel="noopener"
-              >
-                Get Directions <span class="nestwell-contact__directions-icon">↗</span>
+
+              class="nestwell-contact__directions" href="https://www.google.com/maps/dir/?api=1&destination=
+              {{- directions_address | url_encode -}}
+              " target="_blank" rel="noopener" > Get Directions <span class="nestwell-contact__directions-icon">↗</span>
               </a>
             {%- endif -%}
           </div>
@@ -176,9 +174,11 @@
 {%- if section.blocks.size > 0 -%}
   <section class="nestwell-faq">
     <div class="nestwell-faq__intro">
-      <h2 class="nestwell-faq__title">{{ section.settings.faq_title | default: 'Frequently Asked Questions' }}</h2>
+      <h2 class="nestwell-faq__title">
+        {{ section.settings.faq_title | default: 'Frequently Asked Questions' | escape }}
+      </h2>
       {%- if section.settings.faq_description != blank -%}
-        <p class="nestwell-faq__subtitle">{{ section.settings.faq_description }}</p>
+        <p class="nestwell-faq__subtitle">{{ section.settings.faq_description | escape }}</p>
       {%- endif -%}
     </div>
 
@@ -187,11 +187,13 @@
         {%- if block.type == 'faq' -%}
           <div class="nestwell-faq__item" {{ block.shopify_attributes }}>
             <button class="nestwell-faq__question" type="button" data-faq-toggle aria-expanded="false">
-              <span>{{ block.settings.question }}</span>
+              <span>{{ block.settings.question | escape }}</span>
               <span class="nestwell-faq__icon" aria-hidden="true">+</span>
             </button>
             <div class="nestwell-faq__answer" data-faq-panel>
-              <p>{{ block.settings.answer }}</p>
+              <div class="nestwell-faq__answer-inner">
+                <p>{{ block.settings.answer | escape }}</p>
+              </div>
             </div>
           </div>
         {%- endif -%}
@@ -236,10 +238,10 @@
   }
   .nestwell-contact__subtitle {
     font-family: 'DM Sans', sans-serif;
-    font-size: 17px;
+    font-size: 18px;
     line-height: 28px;
     color: #454842;
-    max-width: 50rem;
+    max-width: 32rem;
     margin: 0;
   }
 
@@ -276,7 +278,6 @@
     color: #171916;
     transition: border-color 0.2s ease;
   }
-  /* Hide the native placeholder so it doesn't overlap the floating label */
   .nestwell-contact__input::placeholder {
     color: transparent;
   }
@@ -284,6 +285,11 @@
     outline: none;
     box-shadow: none;
     border-bottom-color: #454842;
+  }
+  .nestwell-contact__input:focus:invalid,
+  .nestwell-contact__input:invalid {
+    box-shadow: none;
+    outline: none;
   }
   .nestwell-contact__textarea {
     resize: none;
@@ -452,7 +458,7 @@
   }
   .nestwell-faq__title {
     font-family: 'EB Garamond', serif;
-    font-size: 64px;
+    font-size: 40px;
     color: #171916;
     margin: 0 0 16px;
   }
@@ -460,7 +466,7 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 18px;
     color: #454842;
-    max-width: 55rem;
+    max-width: 36rem;
     margin: 0 auto;
   }
   .nestwell-faq__item {
@@ -492,9 +498,15 @@
     transform: rotate(45deg);
   }
   .nestwell-faq__answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s ease;
+  }
+  .nestwell-faq__question[aria-expanded='true'] + .nestwell-faq__answer {
+    grid-template-rows: 1fr;
+  }
+  .nestwell-faq__answer-inner {
     overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.4s ease;
   }
   .nestwell-faq__answer p {
     padding-bottom: 24px;
@@ -511,18 +523,13 @@
     if (!toggle) return;
 
     var accordion = toggle.closest('[data-faq-accordion]');
-    var panel = toggle.nextElementSibling;
     var isOpen = toggle.getAttribute('aria-expanded') === 'true';
 
     accordion.querySelectorAll('[data-faq-toggle]').forEach(function (btn) {
-      if (btn !== toggle) {
-        btn.setAttribute('aria-expanded', 'false');
-        btn.nextElementSibling.style.maxHeight = '0px';
-      }
+      btn.setAttribute('aria-expanded', 'false');
     });
 
     toggle.setAttribute('aria-expanded', String(!isOpen));
-    panel.style.maxHeight = isOpen ? '0px' : panel.scrollHeight + 'px';
   });
 {% endjavascript %}
 
