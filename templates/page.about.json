@@ -1,6 +1,18 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "hero": { "type": "nestwell-about-hero", "settings": {} },
+    "hero": {
+      "type": "nestwell-about-hero",
+      "settings": {}
+    },
     "story": {
       "type": "nestwell-about-story",
       "blocks": {
@@ -19,19 +31,61 @@
           }
         }
       },
-      "block_order": ["s1", "s2"]
+      "block_order": [
+        "s1",
+        "s2"
+      ],
+      "settings": {}
     },
     "values": {
       "type": "nestwell-about-values",
       "blocks": {
-        "v1": { "type": "value", "settings": { "icon": "eco", "heading": "Sustainably Sourced", "text": "Partnering with ethical workshops and utilizing renewable materials to tread lightly on the earth." } },
-        "v2": { "type": "value", "settings": { "icon": "architecture", "heading": "Handcrafted Precision", "text": "Every curve and joint is meticulously shaped by artisans who carry generations of knowledge." } },
-        "v3": { "type": "value", "settings": { "icon": "local_shipping", "heading": "Curated Delivery", "text": "White-glove service ensures your sanctuary is assembled with care, precisely when you need it." } }
+        "v1": {
+          "type": "value",
+          "settings": {
+            "icon": "eco",
+            "heading": "Sustainably Sourced",
+            "text": "Partnering with ethical workshops and utilizing renewable materials to tread lightly on the earth."
+          }
+        },
+        "v2": {
+          "type": "value",
+          "settings": {
+            "icon": "architecture",
+            "heading": "Handcrafted Precision",
+            "text": "Every curve and joint is meticulously shaped by artisans who carry generations of knowledge."
+          }
+        },
+        "v3": {
+          "type": "value",
+          "settings": {
+            "icon": "local_shipping",
+            "heading": "Curated Delivery",
+            "text": "White-glove service ensures your sanctuary is assembled with care, precisely when you need it."
+          }
+        }
       },
-      "block_order": ["v1", "v2", "v3"]
+      "block_order": [
+        "v1",
+        "v2",
+        "v3"
+      ],
+      "settings": {}
     },
-    "gallery": { "type": "nestwell-about-gallery", "blocks": {}, "block_order": [] },
-    "cta": { "type": "nestwell-about-cta", "settings": {} }
+    "gallery": {
+      "type": "nestwell-about-gallery",
+      "settings": {}
+    },
+    "cta": {
+      "type": "nestwell-about-cta",
+      "settings": {}
+    }
   },
-  "order": ["hero", "story", "values", "gallery", "cta"]
+  "order": [
+    "hero",
+    "story",
+    "values",
+    "gallery",
+    "cta"
+  ]
 }
