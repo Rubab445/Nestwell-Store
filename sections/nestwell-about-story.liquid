@@ -2,9 +2,12 @@
   <div class="nestwell-about-story__list">
     {%- for block in section.blocks -%}
       {%- if block.type == 'story_block' -%}
-        {%- assign is_even = forloop.index0 | modulo: 2 -%}
-        <div class="nestwell-about-story__row" {{ block.shopify_attributes }}>
-          <div class="nestwell-about-story__media {% if is_even == 0 %}observe-fade-right{% else %}observe-fade-left{% endif %}">
+        {%- assign is_reversed = forloop.index0 | modulo: 2 -%}
+        <div
+          class="nestwell-about-story__row {% if is_reversed == 0 %}nestwell-about-story__row--reversed{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="nestwell-about-story__media {% if is_reversed == 0 %}observe-fade-right{% else %}observe-fade-left{% endif %}">
             {%- if block.settings.image != blank -%}
               <img
                 src="{{ block.settings.image | image_url: width: 1200 }}"
@@ -22,7 +25,7 @@
               >
             {%- endif -%}
           </div>
-          <div class="nestwell-about-story__content {% if is_even == 0 %}observe-fade-left{% else %}observe-fade-right{% endif %}">
+          <div class="nestwell-about-story__content {% if is_reversed == 0 %}observe-fade-left{% else %}observe-fade-right{% endif %}">
             {%- if block.settings.heading != blank -%}
               <h2 class="nestwell-about-story__heading">{{ block.settings.heading | escape }}</h2>
             {%- endif -%}
@@ -64,6 +67,12 @@
   @media screen and (min-width: 990px) {
     .nestwell-about-story {
       padding: 120px 64px;
+    }
+    .nestwell-about-story__row--reversed .nestwell-about-story__media {
+      order: 2;
+    }
+    .nestwell-about-story__row--reversed .nestwell-about-story__content {
+      order: 1;
     }
   }
   .nestwell-about-story__list {
