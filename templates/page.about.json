@@ -125,7 +125,7 @@
       "settings": {
         "heading": "Begin Building Your Sanctuary",
         "button_label": "Return to Collection",
-        "button_link": ""
+        "button_link": "shopify://collections"
       }
     }
   },
