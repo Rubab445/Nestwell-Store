@@ -6,7 +6,7 @@
     {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
       <a href="{{ section.settings.button_link }}" class="nestwell-about-cta__button">
         {{ section.settings.button_label | escape }}
-        <span class="nestwell-about-cta__arrow">arrow_forward</span>
+        <span class="nestwell-about-cta__arrow">{% render 'icon-arrow-forward' %}</span>
       </a>
     {%- endif -%}
   </div>
@@ -63,7 +63,7 @@
     background: #efeeec;
   }
   .nestwell-about-cta__arrow {
-    font-size: 18px;
+    font-size: 6px;
   }
 
   .observe-fade-up {
