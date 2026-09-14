@@ -673,6 +673,17 @@
   }
 {% endstylesheet %}
 
+<script src="{{ 'nestwell-main-product.js' | asset_url }}" defer></script>
+
+{% comment %}
+  JS moved to assets/nestwell-main-product.js (was inline here before).
+  Reason: this file was 900+ lines with markup, schema, CSS and ~230 lines
+  of JS all in one place, and inline <script>/{% javascript %} blocks can't
+  be cached by the browser the way an /assets file can. See that file for
+  the loading-state fix on Add to Cart too.
+{% endcomment %}
+{% comment %} ORIGINAL INLINE BLOCK BELOW — DELETE ONCE nestwell-main-product.js IS CONFIRMED WORKING {% endcomment %}
+{% comment %}
 {% javascript %}
   document.addEventListener('DOMContentLoaded', function () {
     var root = document.querySelector('.nestwell-product');
@@ -910,3 +921,4 @@
     }
   });
 {% endjavascript %}
+{% endcomment %}

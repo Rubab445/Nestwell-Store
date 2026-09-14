@@ -762,15 +762,19 @@
 
   .product-card__img--primary {
     z-index: 10;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
   }
 
   .product-card__img--hover {
     z-index: 0;
   }
 
-  .product-card:hover .product-card__img--primary {
+  .product-card:not(.product-card--single-image):hover .product-card__img--primary {
     opacity: 0;
+  }
+
+  .product-card--single-image:hover .product-card__img--primary {
+    transform: scale(1.05);
   }
 
   .product-card__img--placeholder {

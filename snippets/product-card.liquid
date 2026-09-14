@@ -11,9 +11,13 @@
   if product.variants.size == 1
     assign is_single_variant = true
   endif
+  assign has_hover_image = false
+  if hover_image != blank
+    assign has_hover_image = true
+  endif
 -%}
 
-<div class="product-card">
+<div class="product-card{% unless has_hover_image %} product-card--single-image{% endunless %}">
   <div class="product-card__media-wrap">
     {%- if product.tags contains 'New' -%}
       <span class="product-card__badge">New</span>
