@@ -70,7 +70,7 @@
       }
     },
     "newstell-story": {
-      "type": "newstell-story",
+      "type": "nestwell-story",
       "settings": {
         "image": "shopify://shop_images/story.jpg",
         "eyebrow_text": "Our Philosophy",
