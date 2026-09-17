@@ -1,4 +1,4 @@
-<div class="nestwell-collection" data-section-id="{{ section.id }}">
+<div class="nestwell-collection" data-section-id="{{ section.id }}" data-collection-url="{{ collection.url }}">
   <div class="nestwell-collection__header">
     <nav aria-label="Breadcrumb" class="nestwell-collection__breadcrumb">
       <ol class="nestwell-collection__breadcrumb-list">
@@ -26,114 +26,150 @@
   </div>
 
   <div class="nestwell-collection__body">
-    <aside class="nestwell-collection__sidebar">
-      <div class="nestwell-collection__sidebar-inner">
-        {%- if collection.filters.size > 0 -%}
-          <form
-            id="CollectionFilterForm-{{ section.id }}"
-            class="nestwell-collection__filter-form"
-            method="get"
-            action="{{ collection.url }}"
-          >
-            <div class="nestwell-collection__filter-top">
-              <span class="nestwell-collection__filter-label">Filters</span>
-              <a href="{{ collection.url }}" class="nestwell-collection__clear-all">Clear All</a>
-            </div>
-
-            {%- for filter in collection.filters -%}
-              <div class="nestwell-collection__filter-group">
-                <button
-                  type="button"
-                  class="nestwell-collection__filter-toggle"
-                  aria-expanded="true"
-                  data-filter-toggle
-                >
-                  <span class="nestwell-collection__filter-name">{{ filter.label }}</span>
-                  <span class="material-symbols-outlined nestwell-collection__filter-icon">remove</span>
-                </button>
-
-                <div class="nestwell-collection__filter-content" data-filter-content>
-                  {%- case filter.type -%}
-                    {%- when 'list' -%}
-                      {%- for value in filter.values -%}
-                        <label class="nestwell-collection__filter-option{% if value.count == 0 and value.active == false %} nestwell-collection__filter-option--disabled{% endif %}">
-                          <input
-                            type="checkbox"
-                            class="nestwell-collection__filter-checkbox"
-                            name="{{ value.param_name }}"
-                            value="{{ value.value }}"
-                            {% if value.active %}
-                              checked
-                            {% endif %}
-                            {% if value.count == 0 and value.active == false %}
-                              disabled
-                            {% endif %}
-                          >
-                          <span class="nestwell-collection__filter-check-box">
-                            <span class="material-symbols-outlined nestwell-collection__filter-check-icon">check</span>
-                          </span>
-                          <span class="nestwell-collection__filter-option-label">
-                            {{ value.label }} ({{ value.count }})
-                          </span>
-                        </label>
-                      {%- endfor -%}
-
-                    {%- when 'price_range' -%}
-                      <div class="nestwell-collection__price-range">
-                        <label class="nestwell-collection__price-input-wrap">
-                          <span class="nestwell-collection__price-input-prefix">$</span>
-                          <input
-                            type="number"
-                            class="nestwell-collection__price-input"
-                            name="{{ filter.min_value.param_name }}"
-                            value="{{ filter.min_value.value }}"
-                            placeholder="{{ filter.range_min | money_without_currency }}"
-                            min="0"
-                          >
-                        </label>
-                        <span class="nestwell-collection__price-sep">–</span>
-                        <label class="nestwell-collection__price-input-wrap">
-                          <span class="nestwell-collection__price-input-prefix">$</span>
-                          <input
-                            type="number"
-                            class="nestwell-collection__price-input"
-                            name="{{ filter.max_value.param_name }}"
-                            value="{{ filter.max_value.value }}"
-                            placeholder="{{ filter.range_max | money_without_currency }}"
-                            min="0"
-                          >
-                        </label>
-                      </div>
-
-                    {%- when 'boolean' -%}
-                      {%- for value in filter.values -%}
-                        <label class="nestwell-collection__filter-option">
-                          <input
-                            type="checkbox"
-                            class="nestwell-collection__filter-checkbox"
-                            name="{{ value.param_name }}"
-                            value="{{ value.value }}"
-                            {% if value.active %}
-                              checked
-                            {% endif %}
-                          >
-                          <span class="nestwell-collection__filter-check-box">
-                            <span class="material-symbols-outlined nestwell-collection__filter-check-icon">check</span>
-                          </span>
-                          <span class="nestwell-collection__filter-option-label">{{ filter.label }}</span>
-                        </label>
-                      {%- endfor -%}
-                  {%- endcase -%}
-                </div>
-              </div>
-            {%- endfor -%}
-
-            <input type="hidden" name="sort_by" value="{{ collection.sort_by }}" data-sort-hidden-input>
-            <button type="submit" class="nestwell-collection__filter-apply" data-filter-apply>Apply Filters</button>
-          </form>
+    {%- if collection.filters.size > 0 -%}
+      <button type="button" class="nestwell-collection__filter-trigger" data-filter-open>
+        <span class="material-symbols-outlined nestwell-collection__filter-trigger-icon">tune</span>
+        <span>Filter</span>
+        {%- assign active_filter_count = 0 -%}
+        {%- for filter in collection.filters -%}
+          {%- assign active_filter_count = active_filter_count | plus: filter.active_values.size -%}
+        {%- endfor -%}
+        {%- if active_filter_count > 0 -%}
+          <span class="nestwell-collection__filter-trigger-count">{{ active_filter_count }}</span>
         {%- endif -%}
-      </div>
-    </aside>
+      </button>
+    {%- endif -%}
+
+    <div class="nestwell-collection__filter-drawer" data-filter-drawer aria-hidden="true">
+      <div class="nestwell-collection__filter-overlay" data-filter-close></div>
+
+      <aside class="nestwell-collection__sidebar">
+        <div class="nestwell-collection__sidebar-header">
+          <span class="nestwell-collection__filter-label">Filters</span>
+          <button
+            type="button"
+            class="nestwell-collection__filter-drawer-close"
+            data-filter-close
+            aria-label="Close filters"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="nestwell-collection__sidebar-inner">
+          {%- if collection.filters.size > 0 -%}
+            <form
+              id="CollectionFilterForm-{{ section.id }}"
+              class="nestwell-collection__filter-form"
+              method="get"
+              action="{{ collection.url }}"
+            >
+              <div class="nestwell-collection__filter-top">
+                <span class="nestwell-collection__filter-label">Refine</span>
+                <a href="{{ collection.url }}" class="nestwell-collection__clear-all" data-filter-clear-link>Clear All</a>
+              </div>
+
+              {%- for filter in collection.filters -%}
+                <div class="nestwell-collection__filter-group">
+                  <button
+                    type="button"
+                    class="nestwell-collection__filter-toggle"
+                    aria-expanded="true"
+                    data-filter-toggle
+                  >
+                    <span class="nestwell-collection__filter-name">{{ filter.label }}</span>
+                    <span class="material-symbols-outlined nestwell-collection__filter-icon">remove</span>
+                  </button>
+
+                  <div class="nestwell-collection__filter-content" data-filter-content>
+                    {%- case filter.type -%}
+                      {%- when 'list' -%}
+                        {%- for value in filter.values -%}
+                          <label class="nestwell-collection__filter-option{% if value.count == 0 and value.active == false %} nestwell-collection__filter-option--disabled{% endif %}">
+                            <input
+                              type="checkbox"
+                              class="nestwell-collection__filter-checkbox"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              data-filter-input
+                              {% if value.active %}
+                                checked
+                              {% endif %}
+                              {% if value.count == 0 and value.active == false %}
+                                disabled
+                              {% endif %}
+                            >
+                            <span class="nestwell-collection__filter-check-box">
+                              <span class="material-symbols-outlined nestwell-collection__filter-check-icon">check</span>
+                            </span>
+                            <span class="nestwell-collection__filter-option-label">
+                              {{ value.label }} ({{ value.count }})
+                            </span>
+                          </label>
+                        {%- endfor -%}
+
+                      {%- when 'price_range' -%}
+                        <div class="nestwell-collection__price-range">
+                          <label class="nestwell-collection__price-input-wrap">
+                            <span class="nestwell-collection__price-input-prefix">$</span>
+                            <input
+                              type="number"
+                              class="nestwell-collection__price-input"
+                              name="{{ filter.min_value.param_name }}"
+                              value="{{ filter.min_value.value }}"
+                              placeholder="{{ filter.range_min | money_without_currency }}"
+                              min="0"
+                              data-filter-input
+                              data-filter-debounce
+                            >
+                          </label>
+                          <span class="nestwell-collection__price-sep">–</span>
+                          <label class="nestwell-collection__price-input-wrap">
+                            <span class="nestwell-collection__price-input-prefix">$</span>
+                            <input
+                              type="number"
+                              class="nestwell-collection__price-input"
+                              name="{{ filter.max_value.param_name }}"
+                              value="{{ filter.max_value.value }}"
+                              placeholder="{{ filter.range_max | money_without_currency }}"
+                              min="0"
+                              data-filter-input
+                              data-filter-debounce
+                            >
+                          </label>
+                        </div>
+
+                      {%- when 'boolean' -%}
+                        {%- for value in filter.values -%}
+                          <label class="nestwell-collection__filter-option">
+                            <input
+                              type="checkbox"
+                              class="nestwell-collection__filter-checkbox"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              data-filter-input
+                              {% if value.active %}
+                                checked
+                              {% endif %}
+                            >
+                            <span class="nestwell-collection__filter-check-box">
+                              <span class="material-symbols-outlined nestwell-collection__filter-check-icon">check</span>
+                            </span>
+                            <span class="nestwell-collection__filter-option-label">{{ filter.label }}</span>
+                          </label>
+                        {%- endfor -%}
+                    {%- endcase -%}
+                  </div>
+                </div>
+              {%- endfor -%}
+
+              <input type="hidden" name="sort_by" value="{{ collection.sort_by }}" data-sort-hidden-input>
+              <button type="submit" class="nestwell-collection__filter-apply" data-filter-apply>Apply Filters</button>
+            </form>
+          {%- endif -%}
+        </div>
+      </aside>
+    </div>
 
     <div class="nestwell-collection__main">
       <div class="nestwell-collection__toolbar">
@@ -167,7 +203,7 @@
 
       {%- paginate collection.products by 12 -%}
         {%- if collection.products.size > 0 -%}
-          <div class="nestwell-collection__grid" id="product-grid-{{ section.id }}">
+          <div class="nestwell-collection__grid" id="product-grid-{{ section.id }}" data-product-grid>
             {%- for product in collection.products -%}
               <div
                 class="nestwell-collection__grid-item observe-fade-up"
@@ -194,7 +230,7 @@
             </div>
           {%- endif -%}
         {%- else -%}
-          <div class="nestwell-collection__empty">
+          <div class="nestwell-collection__empty" data-product-grid>
             <p>No products found matching your selection.</p>
             <a href="{{ collection.url }}" class="nestwell-collection__clear-all">Clear filters</a>
           </div>
@@ -346,33 +382,130 @@
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 20px 120px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
   }
 
   @media screen and (min-width: 990px) {
     .nestwell-collection__body {
       padding-left: 64px;
       padding-right: 64px;
-      flex-direction: row;
     }
+  }
+
+  /* Filter trigger button */
+  .nestwell-collection__filter-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid #171916;
+    padding: 10px 20px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #171916;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .nestwell-collection__filter-trigger:hover {
+    background: #171916;
+    color: #ffffff;
+  }
+
+  .nestwell-collection__filter-trigger-icon {
+    font-size: 18px;
+  }
+
+  .nestwell-collection__filter-trigger-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #ba1a1a;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  /* Slide-in drawer */
+  .nestwell-collection__filter-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .nestwell-collection__filter-drawer.is-open {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .nestwell-collection__filter-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(23, 25, 22, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .nestwell-collection__filter-drawer.is-open .nestwell-collection__filter-overlay {
+    opacity: 1;
   }
 
   .nestwell-collection__sidebar {
-    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(400px, 90vw);
+    background: #f4f3f1;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.35s ease;
+  }
+
+  .nestwell-collection__filter-drawer.is-open .nestwell-collection__sidebar {
+    transform: translateX(0);
+  }
+
+  .nestwell-collection__sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid rgba(198, 199, 192, 0.3);
     flex-shrink: 0;
   }
 
-  @media screen and (min-width: 990px) {
-    .nestwell-collection__sidebar {
-      width: 256px;
-    }
+  .nestwell-collection__sidebar-header .nestwell-collection__filter-label {
+    font-family: 'EB Garamond', serif;
+    font-size: 24px;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .nestwell-collection__filter-drawer-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #171916;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .nestwell-collection__sidebar-inner {
-    position: sticky;
-    top: 96px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 24px 24px;
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -383,7 +516,7 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid rgba(198, 199, 192, 0.3);
-    padding-bottom: 16px;
+    padding: 16px 0;
   }
 
   .nestwell-collection__filter-label {
@@ -653,6 +786,12 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 48px 24px;
+    transition: opacity 0.2s ease;
+  }
+
+  .nestwell-collection__grid.is-loading {
+    opacity: 0.4;
+    pointer-events: none;
   }
 
   @media screen and (min-width: 600px) {
@@ -901,70 +1040,203 @@
     var root = document.querySelector('.nestwell-collection');
     if (!root) return;
 
-    // Fade-in for product cards
-    var fadeTargets = root.querySelectorAll('.observe-fade-up');
-    if (fadeTargets.length) {
+    var sectionId = root.getAttribute('data-section-id');
+    var collectionUrlBase = root.getAttribute('data-collection-url');
+
+    // ---- Fade-in for product cards ----
+    function observeFadeTargets(targets) {
       if (!('IntersectionObserver' in window)) {
-        fadeTargets.forEach(function (el) {
+        targets.forEach(function (el) {
           el.classList.add('is-visible');
         });
-      } else {
-        var fadeObserver = new IntersectionObserver(
-          function (entries, obs) {
-            entries.forEach(function (entry) {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                obs.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.1 }
-        );
-        fadeTargets.forEach(function (el) {
-          fadeObserver.observe(el);
-        });
+        return;
       }
+      var fadeObserver = new IntersectionObserver(
+        function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              obs.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      targets.forEach(function (el) {
+        fadeObserver.observe(el);
+      });
+    }
+    observeFadeTargets(root.querySelectorAll('.observe-fade-up'));
+
+    // ---- Filter drawer open/close ----
+    var drawer = root.querySelector('[data-filter-drawer]');
+    var openBtn = root.querySelector('[data-filter-open]');
+
+    function bindDrawerCloseEls() {
+      root.querySelectorAll('[data-filter-close]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          drawer.classList.remove('is-open');
+          drawer.setAttribute('aria-hidden', 'true');
+        });
+      });
     }
 
-    // Filter accordions
-    root.querySelectorAll('[data-filter-toggle]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var content = btn.nextElementSibling;
-        var icon = btn.querySelector('.material-symbols-outlined');
-        var isExpanded = btn.getAttribute('aria-expanded') === 'true';
+    if (drawer && openBtn) {
+      openBtn.addEventListener('click', function () {
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+      });
+      bindDrawerCloseEls();
+    }
 
-        if (isExpanded) {
-          btn.setAttribute('aria-expanded', 'false');
-          icon.textContent = 'add';
-          content.style.maxHeight = '0px';
-          content.style.opacity = '0';
-          content.style.marginTop = '0px';
-        } else {
-          btn.setAttribute('aria-expanded', 'true');
-          icon.textContent = 'remove';
-          content.style.maxHeight = content.scrollHeight + 'px';
-          content.style.opacity = '1';
-          content.style.marginTop = '16px';
+    // ---- Filter accordions (re-bindable, since drawer content gets swapped) ----
+    function bindFilterAccordions() {
+      root.querySelectorAll('[data-filter-toggle]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var content = btn.nextElementSibling;
+          var icon = btn.querySelector('.material-symbols-outlined');
+          var isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+          if (isExpanded) {
+            btn.setAttribute('aria-expanded', 'false');
+            icon.textContent = 'add';
+            content.style.maxHeight = '0px';
+            content.style.opacity = '0';
+            content.style.marginTop = '0px';
+          } else {
+            btn.setAttribute('aria-expanded', 'true');
+            icon.textContent = 'remove';
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.opacity = '1';
+            content.style.marginTop = '16px';
+          }
+        });
+      });
+    }
+    bindFilterAccordions();
+
+    // ---- AJAX filtering ----
+    var filterForm = root.querySelector('.nestwell-collection__filter-form');
+    var grid = root.querySelector('[data-product-grid]');
+    var triggerBtn = root.querySelector('[data-filter-open]');
+    var debounceTimer;
+
+    function buildFilterUrl() {
+      var formData = new FormData(filterForm);
+      var params = new URLSearchParams();
+      formData.forEach(function (value, key) {
+        if (value) params.append(key, value);
+      });
+      var query = params.toString();
+      return {
+        pageUrl: collectionUrlBase + (query ? '?' + query : ''),
+        fetchUrl: collectionUrlBase + '?' + (query ? query + '&' : '') + 'section_id=' + sectionId,
+      };
+    }
+
+    function applyFiltersAjax() {
+      if (!filterForm || !grid) return;
+      var urls = buildFilterUrl();
+
+      grid.classList.add('is-loading');
+
+      fetch(urls.fetchUrl)
+        .then(function (response) {
+          return response.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+
+          var newGrid = doc.querySelector('[data-product-grid]');
+          var newSidebarInner = doc.querySelector('.nestwell-collection__sidebar-inner');
+          var newTrigger = doc.querySelector('[data-filter-open]');
+          var newPagination = doc.querySelector('.nestwell-collection__pagination');
+          var oldPagination = root.querySelector('.nestwell-collection__pagination');
+
+          if (newGrid && grid) {
+            grid.replaceWith(newGrid);
+            grid = root.querySelector('[data-product-grid]');
+            observeFadeTargets(grid.querySelectorAll('.observe-fade-up'));
+            grid.querySelectorAll('.observe-fade-up').forEach(function (el) {
+              // filtered results are already in view context; show immediately
+              el.classList.add('is-visible');
+            });
+            bindLoadMore();
+          }
+
+          if (oldPagination) {
+            if (newPagination) {
+              oldPagination.replaceWith(newPagination);
+            } else {
+              oldPagination.remove();
+            }
+          }
+
+          if (newSidebarInner) {
+            var currentSidebarInner = root.querySelector('.nestwell-collection__sidebar-inner');
+            currentSidebarInner.innerHTML = newSidebarInner.innerHTML;
+            filterForm = root.querySelector('.nestwell-collection__filter-form');
+            bindFilterAccordions();
+            bindFilterInputs();
+            bindClearLink();
+          }
+
+          if (newTrigger && triggerBtn) {
+            triggerBtn.innerHTML = newTrigger.innerHTML;
+          }
+
+          history.pushState({}, '', urls.pageUrl);
+        })
+        .catch(function () {
+          // fallback: real navigation if fetch fails
+          window.location.href = urls.pageUrl;
+        })
+        .finally(function () {
+          if (grid) grid.classList.remove('is-loading');
+        });
+    }
+
+    function bindFilterInputs() {
+      if (!filterForm) return;
+
+      filterForm.querySelectorAll('[data-filter-input]').forEach(function (input) {
+        if (input.type === 'checkbox') {
+          input.addEventListener('change', applyFiltersAjax);
+        } else if (input.hasAttribute('data-filter-debounce')) {
+          input.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(applyFiltersAjax, 500);
+          });
         }
       });
-    });
 
-    // Auto-submit filter form on checkbox change (progressive enhancement;
-    // the visible "Apply Filters" button still works with JS disabled)
-    var filterForm = root.querySelector('.nestwell-collection__filter-form');
-    if (filterForm) {
-      filterForm.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
-        input.addEventListener('change', function () {
-          filterForm.requestSubmit();
-        });
+      // Keep the visible submit button working (progressive enhancement)
+      filterForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        applyFiltersAjax();
+        if (drawer) {
+          drawer.classList.remove('is-open');
+          drawer.setAttribute('aria-hidden', 'true');
+        }
       });
     }
+    bindFilterInputs();
 
-    // Sort dropdown
+    function bindClearLink() {
+      var clearLink = root.querySelector('[data-filter-clear-link]');
+      if (!clearLink) return;
+      clearLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        filterForm.reset();
+        applyFiltersAjax();
+      });
+    }
+    bindClearLink();
+
+    // ---- Sort dropdown ----
     var sortWrap = root.querySelector('[data-sort-dropdown]');
     if (sortWrap) {
       var sortToggle = sortWrap.querySelector('[data-sort-toggle]');
-      var sortHiddenInput = filterForm ? filterForm.querySelector('[data-sort-hidden-input]') : null;
 
       sortToggle.addEventListener('click', function () {
         var isOpen = sortWrap.getAttribute('data-open') === 'true';
@@ -989,8 +1261,7 @@
       });
     }
 
-    // Toast helper
-    var sectionId = root.getAttribute('data-section-id');
+    // ---- Toast helper ----
     var toastContainer = document.querySelector(
       '.nestwell-collection__toast-container[data-section-id="' + sectionId + '"]'
     );
@@ -1014,8 +1285,7 @@
       }, 3000);
     }
 
-    // Quick add — real AJAX add to cart (delegated on root so it also
-    // works for product cards appended later via Load More)
+    // ---- Quick add — real AJAX add to cart ----
     root.addEventListener('submit', function (e) {
       var form = e.target.closest('.product-card__quick-add-form');
       if (!form) return;
@@ -1056,11 +1326,11 @@
         });
     });
 
-    // Load more — real pagination link, AJAX-enhanced to append instead of navigating
-    var loadMoreBtn = root.querySelector('[data-load-more]');
-    var grid = root.querySelector('.nestwell-collection__grid');
+    // ---- Load more — AJAX-enhanced pagination (re-bindable after filter swaps) ----
+    function bindLoadMore() {
+      var loadMoreBtn = root.querySelector('[data-load-more]');
+      if (!loadMoreBtn || !grid) return;
 
-    if (loadMoreBtn && grid) {
       loadMoreBtn.addEventListener('click', function (e) {
         e.preventDefault();
         var nextUrl = loadMoreBtn.getAttribute('data-next-url');
@@ -1073,27 +1343,15 @@
             return response.text();
           })
           .then(function (html) {
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(html, 'text/html');
-            var newGrid = doc.querySelector('.nestwell-collection__grid');
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+            var newGrid = doc.querySelector('[data-product-grid]');
             var newLoadMore = doc.querySelector('[data-load-more]');
 
             if (newGrid) {
               Array.from(newGrid.children).forEach(function (card) {
                 card.classList.remove('is-visible');
                 grid.appendChild(card);
-                var fadeObserver = new IntersectionObserver(
-                  function (entries, obs) {
-                    entries.forEach(function (entry) {
-                      if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        obs.unobserve(entry.target);
-                      }
-                    });
-                  },
-                  { threshold: 0.1 }
-                );
-                fadeObserver.observe(card);
+                observeFadeTargets([card]);
               });
             }
 
@@ -1111,5 +1369,6 @@
           });
       });
     }
+    bindLoadMore();
   });
 {% endjavascript %}
