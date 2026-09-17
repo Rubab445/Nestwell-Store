@@ -3,6 +3,8 @@
 A Shopify storefront for a home & lifestyle decor brand, built on top of Shopify's [Dawn](https://github.com/Shopify/dawn) theme (v16.0.0).
 
 Dawn provides the core commerce functionality (cart, checkout, search, accessibility scaffolding). On top of that, this project adds a fully custom set of `nestwell-*` sections for the brand's storefront, product, and about/contact pages.
+Live demo: https://nestwell-l0x0fgzs.myshopify.com/?preview_theme_id=162091237600 
+Password: motsew
 
 ## What's custom vs. stock
 
