@@ -1,7 +1,6 @@
 {
   "sections": {
-    "header": { "type": "nestwell-header" },
     "main": { "type": "main-collection" }
   },
-  "order": ["header", "main"]
+  "order": ["main"]
 }

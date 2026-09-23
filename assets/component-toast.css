@@ -15,7 +15,7 @@
   color: #ffffff;
   padding: 12px 24px;
   border-radius: 999px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-body-family);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;

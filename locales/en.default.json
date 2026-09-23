@@ -19,6 +19,7 @@
       "admin_link_html": "Are you the store owner? <a href=\"/admin\" class=\"link underlined-link\">Log in here</a>",
       "powered_by_shopify_html": "This shop will be powered by {{ shopify }}"
     },
+    
     "social": {
       "alt_text": {
         "share_on_facebook": "Share on Facebook",
@@ -537,5 +538,47 @@
       "send_on": "YYYY-MM-DD",
       "send_on_label": "Send on (optional)"
     }
+  },
+  "nestwell": {
+  "general": {
+    "menu": "Menu",
+    "main_menu": "Main menu",
+    "search": "Search",
+    "cart": "Cart",
+    "mobile_menu": "Mobile menu",
+    "close_menu": "Close menu"
+  },
+  "collection": {
+    "item_count": { "one": "{{ count }} item", "other": "{{ count }} items" },
+    "filter": "Filter",
+    "filters": "Filters",
+    "clear_all": "Clear All",
+    "apply_filters": "Apply Filters",
+    "load_more": "Load More",
+    "min": "Min",
+    "max": "Max"
+  },
+  "product": {
+    "add_to_cart": "Add to Cart",
+    "sold_out": "Sold Out",
+    "new_badge": "New",
+    "decrease_quantity": "Decrease quantity",
+    "increase_quantity": "Increase quantity",
+    "show_image": "Show image {{ index }}",
+    "breadcrumb": "Breadcrumb"
+  },
+  "contact": {
+    "name_placeholder": "Name",
+    "email_placeholder": "Email Address",
+    "subject_placeholder": "Subject",
+    "message_placeholder": "Message",
+    "send_message": "Send Message",
+    "get_directions": "Get Directions"
+  },
+  "footer": {
+    "email_placeholder": "Your email",
+    "subscribe": "Subscribe"
   }
+}
+
 }

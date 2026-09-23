@@ -6,7 +6,7 @@
 
 <header class="nestwell-header">
   <div class="nestwell-header__container">
-    <button class="nestwell-header__menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="header-mobile-nav">
+    <button class="nestwell-header__menu-btn" aria-label="{{ 'nestwell.general.menu' | t }}" aria-expanded="false" aria-controls="header-mobile-nav">
       <span class="nestwell-header__menu-icon"></span>
     </button>
 
@@ -26,14 +26,15 @@
     </a>
 
     {%- if menu != blank -%}
-      <nav class="nestwell-header__nav" aria-label="Main menu">
+      <nav class="nestwell-header__nav" aria-label="{{ 'nestwell.general.main_menu' | t }}">
         {%- for link in menu.links -%}
-          <a
-            href="{{ link.url }}"
-            class="nestwell-header__nav-link{% if link.title == 'Sale' or link.title == 'sale' %} nestwell-header__nav-link--sale{% endif %}{% if link.active %} nestwell-header__nav-link--active{% endif %}"
-            {% if link.active %}
-              aria-current="page"
-            {% endif %}
+          {%- assign link_title_downcase = link.title | downcase | strip -%}
+          <a href="{{ link.url }}" class="nestwell-header__nav-link
+              {% if link_title_downcase == 'sale' %} nestwell-header__nav-link--sale{% endif %}
+              {% if link.active %} nestwell-header__nav-link--active{% endif %}"
+              {% if link.active %}
+                aria-current="page"
+              {% endif %}
           >
             {{ link.title | escape }}
           </a>
@@ -42,9 +43,7 @@
     {%- endif -%}
 
     <div class="nestwell-header__icons">
-      <a href="{{ routes.search_url }}" class="nestwell-header__icon-btn" aria-label="Search">
-        {% render 'header-search' %}
-      </a>
+      {% render 'header-search' %}
       <a
         href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
         class="nestwell-header__icon-btn nestwell-header__icon-btn--account"
@@ -56,7 +55,7 @@
       <a
         href="{{ routes.cart_url }}"
         class="nestwell-header__icon-btn nestwell-header__icon-btn--cart"
-        aria-label="Cart"
+        aria-label="{{ 'nestwell.general.cart' | t }}"
       >
         {% render 'icon-cart' %}
         <span class="nestwell-header__cart-count" data-cart-count>{{ cart.item_count }}</span>
@@ -70,11 +69,11 @@
     <nav
       id="header-mobile-nav"
       class="nestwell-header__drawer"
-      aria-label="Mobile menu"
+      aria-label="{{ 'nestwell.general.main_menu' | t }}"
       hidden
     >
       <div class="nestwell-header__drawer-top">
-        <button class="nestwell-header__drawer-close" data-drawer-close aria-label="Close menu">
+        <button class="nestwell-header__drawer-close" data-drawer-close aria-label="{{ 'nestwell.general.close_menu' | t }}">
           {% render 'icon-close' %}
         </button>
       </div>
@@ -93,7 +92,7 @@
     color: rgb(var(--nestwell-on-primary));
     text-align: center;
     padding: 8px 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -163,7 +162,7 @@
 
   .nestwell-header__logo-text {
     display: none;
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 24px;
     line-height: 32px;
     font-weight: 500;
@@ -193,7 +192,7 @@
   }
 
   .nestwell-header__nav-link {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -262,7 +261,7 @@
     border-radius: 999px;
     background: rgb(var(--nestwell-primary));
     color: rgb(var(--nestwell-on-primary));
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 10px;
     display: flex;
     align-items: center;
@@ -324,7 +323,7 @@
 
   .nestwell-header__mobile-nav-link {
     padding: 12px 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -415,17 +414,21 @@
     // Scroll-shrink state
     if (header) {
       const SCROLL_THRESHOLD = 40;
+      let isScrolled = window.scrollY > SCROLL_THRESHOLD;
 
       function handleScroll() {
-        if (window.scrollY > SCROLL_THRESHOLD) {
-          header.classList.add('nestwell-header--scrolled');
-        } else {
-          header.classList.remove('nestwell-header--scrolled');
+        const shouldBeScrolled = window.scrollY > SCROLL_THRESHOLD;
+        if (shouldBeScrolled !== isScrolled) {
+          isScrolled = shouldBeScrolled;
+          header.classList.toggle('nestwell-header--scrolled', isScrolled);
+          updateSpacer();
         }
       }
 
       window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('resize', updateSpacer);
       handleScroll();
+      updateSpacer();
     }
 
     function getFocusable() {

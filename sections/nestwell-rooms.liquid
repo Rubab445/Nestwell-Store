@@ -13,7 +13,7 @@
       {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
         <a href="{{ section.settings.link_url }}" class="nestwell-rooms__header-link">
           {{ section.settings.link_label | escape }}
-          <span class="material-symbols-outlined nestwell-rooms__header-link-icon">
+          <span class="nestwell-rooms__header-link-icon">
             {% render 'icon-arrow-outward' %}
           </span>
         </a>
@@ -160,7 +160,7 @@
 
   .nestwell-rooms__title {
     margin: 0 0 16px;
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 32px;
     line-height: 40px;
     font-weight: 400;
@@ -170,7 +170,7 @@
   .nestwell-rooms__subtitle {
     max-width: 50rem;
     margin: 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 16px;
     line-height: 24px;
     font-weight: 400;
@@ -184,7 +184,7 @@
     margin-top: 24px;
     padding-bottom: 4px;
     border-bottom: 1px solid #171916;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -286,7 +286,7 @@
 
   .nestwell-rooms__item-title {
     margin: 0;
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 24px;
     line-height: 32px;
     font-weight: 500;
@@ -305,59 +305,6 @@
     transform: translateX(0);
   }
 
-  /* Fade-up on scroll, staggered via inline transition-delay per block index */
-  .observe-fade-up {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
 
-  .observe-fade-up.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .nestwell-rooms__item-img,
-    .nestwell-rooms__item-overlay,
-    .nestwell-rooms__item-arrow,
-    .nestwell-rooms__header-link,
-    .observe-fade-up {
-      transition: none;
-    }
-    .observe-fade-up {
-      opacity: 1;
-      transform: none;
-    }
-  }
 {% endstylesheet %}
 
-{% javascript %}
-  document.addEventListener('DOMContentLoaded', function () {
-    var targets = document.querySelectorAll('.nestwell-rooms .observe-fade-up');
-    if (!targets.length) return;
-
-    if (!('IntersectionObserver' in window)) {
-      targets.forEach(function (el) {
-        el.classList.add('is-visible');
-      });
-      return;
-    }
-
-    var observer = new IntersectionObserver(
-      function (entries, obs) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-
-    targets.forEach(function (el) {
-      observer.observe(el);
-    });
-  });
-{% endjavascript %}

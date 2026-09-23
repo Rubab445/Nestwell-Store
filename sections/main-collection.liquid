@@ -21,15 +21,19 @@
           <div class="nestwell-collection__description">{{ collection.description }}</div>
         {%- endif -%}
       </div>
-      <div class="nestwell-collection__count">{{ collection.products_count }} Items</div>
+      <div class="nestwell-collection__count">
+        {{ 'nestwell.collection.item_count' | t: count: collection.products_count }}
+      </div>
     </div>
   </div>
 
   <div class="nestwell-collection__body">
     {%- if collection.filters.size > 0 -%}
       <button type="button" class="nestwell-collection__filter-trigger" data-filter-open>
-        <span class="material-symbols-outlined nestwell-collection__filter-trigger-icon">tune</span>
-        <span>Filter</span>
+        <span class="nestwell-collection__filter-trigger-icon">
+          {{- 'icon-filter.svg' | inline_asset_content -}}
+        </span>
+        <span>{{ 'nestwell.collection.filter' | t }}</span>
         {%- assign active_filter_count = 0 -%}
         {%- for filter in collection.filters -%}
           {%- assign active_filter_count = active_filter_count | plus: filter.active_values.size -%}
@@ -45,14 +49,14 @@
 
       <aside class="nestwell-collection__sidebar">
         <div class="nestwell-collection__sidebar-header">
-          <span class="nestwell-collection__filter-label">Filters</span>
+          <span class="nestwell-collection__filter-label">{{ 'nestwell.collection.filters' | t }}</span>
           <button
             type="button"
             class="nestwell-collection__filter-drawer-close"
             data-filter-close
             aria-label="Close filters"
           >
-            <span class="material-symbols-outlined">close</span>
+            <span>{{- 'icon-close.svg' | inline_asset_content -}}</span>
           </button>
         </div>
 
@@ -66,7 +70,9 @@
             >
               <div class="nestwell-collection__filter-top">
                 <span class="nestwell-collection__filter-label">Refine</span>
-                <a href="{{ collection.url }}" class="nestwell-collection__clear-all" data-filter-clear-link>Clear All</a>
+                <a href="{{ collection.url }}" class="nestwell-collection__clear-all" data-filter-clear-link>
+                  {{- 'nestwell.collection.clear_all' | t -}}
+                </a>
               </div>
 
               {%- for filter in collection.filters -%}
@@ -78,7 +84,12 @@
                     data-filter-toggle
                   >
                     <span class="nestwell-collection__filter-name">{{ filter.label }}</span>
-                    <span class="material-symbols-outlined nestwell-collection__filter-icon">remove</span>
+                    <span class="nestwell-collection__filter-icon nestwell-collection__filter-icon--minus">
+                      {{- 'icon-minus.svg' | inline_asset_content -}}
+                    </span>
+                    <span class="nestwell-collection__filter-icon nestwell-collection__filter-icon--plus">
+                      {{- 'icon-plus.svg' | inline_asset_content -}}
+                    </span>
                   </button>
 
                   <div class="nestwell-collection__filter-content" data-filter-content>
@@ -90,7 +101,7 @@
                               type="checkbox"
                               class="nestwell-collection__filter-checkbox"
                               name="{{ value.param_name }}"
-                              value="{{ value.value }}"
+                              value="{{ value.value | escape }}"
                               data-filter-input
                               {% if value.active %}
                                 checked
@@ -100,7 +111,9 @@
                               {% endif %}
                             >
                             <span class="nestwell-collection__filter-check-box">
-                              <span class="material-symbols-outlined nestwell-collection__filter-check-icon">check</span>
+                              <span class="nestwell-collection__filter-check-icon">
+                                {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                              </span>
                             </span>
                             <span class="nestwell-collection__filter-option-label">
                               {{ value.label }} ({{ value.count }})
@@ -116,7 +129,7 @@
                               type="number"
                               class="nestwell-collection__price-input"
                               name="{{ filter.min_value.param_name }}"
-                              value="{{ filter.min_value.value }}"
+                              value="{{ filter.min_value.value | escape}}"
                               placeholder="{{ filter.range_min | money_without_currency }}"
                               min="0"
                               data-filter-input
@@ -130,7 +143,7 @@
                               type="number"
                               class="nestwell-collection__price-input"
                               name="{{ filter.max_value.param_name }}"
-                              value="{{ filter.max_value.value }}"
+                              value="{{ filter.max_value.value | escape}}"
                               placeholder="{{ filter.range_max | money_without_currency }}"
                               min="0"
                               data-filter-input
@@ -146,14 +159,16 @@
                               type="checkbox"
                               class="nestwell-collection__filter-checkbox"
                               name="{{ value.param_name }}"
-                              value="{{ value.value }}"
+                              value="{{ value.value | escape}}"
                               data-filter-input
                               {% if value.active %}
                                 checked
                               {% endif %}
                             >
                             <span class="nestwell-collection__filter-check-box">
-                              <span class="material-symbols-outlined nestwell-collection__filter-check-icon">check</span>
+                              <span class="nestwell-collection__filter-check-icon">
+                                {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                              </span>
                             </span>
                             <span class="nestwell-collection__filter-option-label">{{ filter.label }}</span>
                           </label>
@@ -164,7 +179,9 @@
               {%- endfor -%}
 
               <input type="hidden" name="sort_by" value="{{ collection.sort_by }}" data-sort-hidden-input>
-              <button type="submit" class="nestwell-collection__filter-apply" data-filter-apply>Apply Filters</button>
+              <button type="submit" class="nestwell-collection__filter-apply" data-filter-apply>
+                {{ 'nestwell.collection.apply_filters' | t }}
+              </button>
             </form>
           {%- endif -%}
         </div>
@@ -224,7 +241,9 @@
                   data-next-url="{{ paginate.next.url }}"
                 >
                   <span>Load More</span>
-                  <span class="material-symbols-outlined nestwell-collection__load-more-icon">expand_more</span>
+                  <span class="nestwell-collection__load-more-icon">
+                    {{- 'icon-caret.svg' | inline_asset_content -}}
+                  </span>
                 </a>
               {%- endif -%}
             </div>
@@ -240,9 +259,7 @@
   </div>
 </div>
 
-<div
-  {%- render 'toast', section_id: section.id -%}
-></div>
+{%- render 'toast', section_id: section.id -%}
 
 {% schema %}
 {
@@ -295,7 +312,7 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -345,7 +362,7 @@
 
   .nestwell-collection__title {
     margin: 0 0 16px;
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 40px;
     line-height: 48px;
     font-weight: 400;
@@ -361,7 +378,7 @@
   }
 
   .nestwell-collection__description {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 18px;
     line-height: 28px;
     font-weight: 400;
@@ -369,7 +386,7 @@
   }
 
   .nestwell-collection__count {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -401,7 +418,7 @@
     padding: 10px 20px;
     margin-bottom: 24px;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -486,7 +503,7 @@
   }
 
   .nestwell-collection__sidebar-header .nestwell-collection__filter-label {
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 24px;
     letter-spacing: normal;
     text-transform: none;
@@ -520,7 +537,7 @@
   }
 
   .nestwell-collection__filter-label {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -530,7 +547,7 @@
   }
 
   .nestwell-collection__clear-all {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -538,6 +555,16 @@
     color: #454842;
     text-decoration: underline;
     transition: color 0.2s ease;
+  }
+
+  .nestwell-collection__filter-icon--plus {
+    display: none;
+  }
+  [aria-expanded='false'] .nestwell-collection__filter-icon--minus {
+    display: none;
+  }
+  [aria-expanded='false'] .nestwell-collection__filter-icon--plus {
+    display: block;
   }
 
   .nestwell-collection__clear-all:hover {
@@ -560,7 +587,7 @@
   }
 
   .nestwell-collection__filter-name {
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 20px;
     line-height: 28px;
     color: #171916;
@@ -636,7 +663,7 @@
   }
 
   .nestwell-collection__filter-option-label {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 16px;
     line-height: 24px;
     color: #454842;
@@ -665,7 +692,7 @@
     width: 60px;
     border: none;
     outline: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 14px;
     color: #171916;
   }
@@ -686,7 +713,7 @@
     color: #ffffff;
     border: none;
     padding: 14px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -722,7 +749,7 @@
     border: none;
     cursor: pointer;
     padding: 8px 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 16px;
     color: #454842;
     transition: color 0.2s ease;
@@ -766,7 +793,7 @@
     border: none;
     cursor: pointer;
     padding: 8px 16px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 16px;
     color: #454842;
     transition: background-color 0.2s ease;
@@ -826,7 +853,7 @@
     color: #171916;
     background: transparent;
     padding: 16px 40px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -849,27 +876,8 @@
   .nestwell-collection__empty {
     text-align: center;
     padding: 80px 20px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     color: #454842;
-  }
-
-  .observe-fade-up {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .observe-fade-up.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .observe-fade-up {
-      transition: none;
-      opacity: 1;
-      transform: none;
-    }
   }
 
   .product-card {
@@ -929,7 +937,7 @@
     z-index: 20;
     background: #ffffff;
     padding: 4px 8px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -956,7 +964,7 @@
     border: none;
     border-radius: 999px;
     padding: 12px 24px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -1008,7 +1016,7 @@
 
   .product-card__title {
     margin: 0 0 4px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 16px;
     line-height: 24px;
     font-weight: 400;
@@ -1016,7 +1024,7 @@
   }
 
   .product-card__price {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     line-height: 16px;
     font-weight: 600;
@@ -1036,37 +1044,11 @@
 {% endstylesheet %}
 
 {% javascript %}
-  document.addEventListener('DOMContentLoaded', function () {
-    var root = document.querySelector('.nestwell-collection');
+  function initCollection(root) {
     if (!root) return;
 
     var sectionId = root.getAttribute('data-section-id');
     var collectionUrlBase = root.getAttribute('data-collection-url');
-
-    // ---- Fade-in for product cards ----
-    function observeFadeTargets(targets) {
-      if (!('IntersectionObserver' in window)) {
-        targets.forEach(function (el) {
-          el.classList.add('is-visible');
-        });
-        return;
-      }
-      var fadeObserver = new IntersectionObserver(
-        function (entries, obs) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              obs.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      targets.forEach(function (el) {
-        fadeObserver.observe(el);
-      });
-    }
-    observeFadeTargets(root.querySelectorAll('.observe-fade-up'));
 
     // ---- Filter drawer open/close ----
     var drawer = root.querySelector('[data-filter-drawer]');
@@ -1094,18 +1076,16 @@
       root.querySelectorAll('[data-filter-toggle]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var content = btn.nextElementSibling;
-          var icon = btn.querySelector('.material-symbols-outlined');
+
           var isExpanded = btn.getAttribute('aria-expanded') === 'true';
 
           if (isExpanded) {
             btn.setAttribute('aria-expanded', 'false');
-            icon.textContent = 'add';
             content.style.maxHeight = '0px';
             content.style.opacity = '0';
             content.style.marginTop = '0px';
           } else {
             btn.setAttribute('aria-expanded', 'true');
-            icon.textContent = 'remove';
             content.style.maxHeight = content.scrollHeight + 'px';
             content.style.opacity = '1';
             content.style.marginTop = '16px';
@@ -1116,10 +1096,11 @@
     bindFilterAccordions();
 
     // ---- AJAX filtering ----
+    var debounceTimer;
+    var activeFilterController = null;
     var filterForm = root.querySelector('.nestwell-collection__filter-form');
     var grid = root.querySelector('[data-product-grid]');
     var triggerBtn = root.querySelector('[data-filter-open]');
-    var debounceTimer;
 
     function buildFilterUrl() {
       var formData = new FormData(filterForm);
@@ -1134,61 +1115,71 @@
       };
     }
 
+    function applyFilteredHtml(html, options) {
+      options = options || {};
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+
+      var newGrid = doc.querySelector('[data-product-grid]');
+      var newSidebarInner = doc.querySelector('.nestwell-collection__sidebar-inner');
+      var newTrigger = doc.querySelector('[data-filter-open]');
+      var newPagination = doc.querySelector('.nestwell-collection__pagination');
+      var oldPagination = root.querySelector('.nestwell-collection__pagination');
+
+      if (newGrid && grid) {
+        grid.replaceWith(newGrid);
+        grid = root.querySelector('[data-product-grid]');
+        grid.querySelectorAll('.observe-fade-up').forEach(function (el) {
+          el.classList.add('is-visible');
+        });
+        bindLoadMore();
+      }
+
+      if (oldPagination) {
+        if (newPagination) {
+          oldPagination.replaceWith(newPagination);
+        } else {
+          oldPagination.remove();
+        }
+      }
+
+      if (newSidebarInner) {
+        var currentSidebarInner = root.querySelector('.nestwell-collection__sidebar-inner');
+        currentSidebarInner.innerHTML = newSidebarInner.innerHTML;
+        filterForm = root.querySelector('.nestwell-collection__filter-form');
+        bindFilterAccordions();
+        bindFilterInputs();
+        bindClearLink();
+      }
+
+      if (newTrigger && triggerBtn) {
+        triggerBtn.innerHTML = newTrigger.innerHTML;
+      }
+
+      if (options.pushState) {
+        history.pushState({}, '', options.pageUrl);
+      }
+    }
+
     function applyFiltersAjax() {
       if (!filterForm || !grid) return;
       var urls = buildFilterUrl();
 
+      if (activeFilterController) activeFilterController.abort();
+      activeFilterController = new AbortController();
+
       grid.classList.add('is-loading');
 
-      fetch(urls.fetchUrl)
+      fetch(urls.fetchUrl, { signal: activeFilterController.signal })
         .then(function (response) {
           return response.text();
         })
+
         .then(function (html) {
-          var doc = new DOMParser().parseFromString(html, 'text/html');
-
-          var newGrid = doc.querySelector('[data-product-grid]');
-          var newSidebarInner = doc.querySelector('.nestwell-collection__sidebar-inner');
-          var newTrigger = doc.querySelector('[data-filter-open]');
-          var newPagination = doc.querySelector('.nestwell-collection__pagination');
-          var oldPagination = root.querySelector('.nestwell-collection__pagination');
-
-          if (newGrid && grid) {
-            grid.replaceWith(newGrid);
-            grid = root.querySelector('[data-product-grid]');
-            observeFadeTargets(grid.querySelectorAll('.observe-fade-up'));
-            grid.querySelectorAll('.observe-fade-up').forEach(function (el) {
-              // filtered results are already in view context; show immediately
-              el.classList.add('is-visible');
-            });
-            bindLoadMore();
-          }
-
-          if (oldPagination) {
-            if (newPagination) {
-              oldPagination.replaceWith(newPagination);
-            } else {
-              oldPagination.remove();
-            }
-          }
-
-          if (newSidebarInner) {
-            var currentSidebarInner = root.querySelector('.nestwell-collection__sidebar-inner');
-            currentSidebarInner.innerHTML = newSidebarInner.innerHTML;
-            filterForm = root.querySelector('.nestwell-collection__filter-form');
-            bindFilterAccordions();
-            bindFilterInputs();
-            bindClearLink();
-          }
-
-          if (newTrigger && triggerBtn) {
-            triggerBtn.innerHTML = newTrigger.innerHTML;
-          }
-
-          history.pushState({}, '', urls.pageUrl);
+          applyFilteredHtml(html, { pushState: true, pageUrl: urls.pageUrl });
         })
-        .catch(function () {
-          // fallback: real navigation if fetch fails
+
+        .catch(function (err) {
+          if (err.name === 'AbortError') return;
           window.location.href = urls.pageUrl;
         })
         .finally(function () {
@@ -1227,12 +1218,45 @@
       if (!clearLink) return;
       clearLink.addEventListener('click', function (e) {
         e.preventDefault();
-        filterForm.reset();
+        filterForm.querySelectorAll('[data-filter-input]').forEach(function (input) {
+          if (input.type === 'checkbox' || input.type === 'radio') {
+            input.checked = false;
+          } else {
+            input.value = '';
+          }
+        });
         applyFiltersAjax();
       });
     }
     bindClearLink();
 
+    window.addEventListener('popstate', function () {
+      if (!filterForm || !grid) return;
+      var fetchUrl =
+        window.location.pathname +
+        window.location.search +
+        (window.location.search ? '&' : '?') +
+        'section_id=' +
+        sectionId;
+
+      if (activeFilterController) activeFilterController.abort();
+      activeFilterController = new AbortController();
+      grid.classList.add('is-loading');
+
+      fetch(fetchUrl, { signal: activeFilterController.signal })
+        .then(function (response) {
+          return response.text();
+        })
+        .then(function (html) {
+          applyFilteredHtml(html, { pushState: false });
+        })
+        .catch(function (err) {
+          if (err.name !== 'AbortError') window.location.reload();
+        })
+        .finally(function () {
+          if (grid) grid.classList.remove('is-loading');
+        });
+    });
     // ---- Sort dropdown ----
     var sortWrap = root.querySelector('[data-sort-dropdown]');
     if (sortWrap) {
@@ -1262,17 +1286,21 @@
     }
 
     // ---- Toast helper ----
-    var toastContainer = document.querySelector(
-      '.nestwell-collection__toast-container[data-section-id="' + sectionId + '"]'
-    );
+    var toastContainer = document.querySelector('.nestwell-toast-container[data-section-id="' + sectionId + '"]');
     function showToast(message) {
       if (!toastContainer) return;
       var toast = document.createElement('div');
       toast.className = 'nestwell-collection__toast';
-      toast.innerHTML =
-        '<span class="material-symbols-outlined" style="font-size:16px;">check_circle</span> ' + message;
-      toastContainer.appendChild(toast);
 
+      var icon = document.createElement('span');
+      icon.className = 'nestwell-collection__toast-icon';
+      icon.innerHTML =
+        '<svg class="icon icon-success" viewBox="0 0 13 13" style="width: 16px; height: 16px;"><path fill="#428445" stroke="#fff" stroke-width=".7" d="M6.5 12.35a5.85 5.85 0 1 0 0-11.7 5.85 5.85 0 0 0 0 11.7Z"/><path stroke="#fff" d="m5.533 8.664 3.72-3.982M4.106 6.769l2.032 1.857"/></svg>';
+
+      toast.appendChild(icon);
+      toast.appendChild(document.createTextNode(' ' + message));
+
+      toastContainer.appendChild(toast);
       requestAnimationFrame(function () {
         toast.classList.add('nestwell-collection__toast--visible');
       });
@@ -1333,7 +1361,7 @@
 
       loadMoreBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        var nextUrl = loadMoreBtn.getAttribute('data-next-url');
+        var nextUrl = loadMoreBtn.getAttribute('data-next-url') + '&section_id=' + sectionId;
         if (!nextUrl) return;
 
         loadMoreBtn.setAttribute('data-loading', 'true');
@@ -1351,7 +1379,7 @@
               Array.from(newGrid.children).forEach(function (card) {
                 card.classList.remove('is-visible');
                 grid.appendChild(card);
-                observeFadeTargets([card]);
+                window.nestwellObserveReveal(card);
               });
             }
 
@@ -1370,5 +1398,12 @@
       });
     }
     bindLoadMore();
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    initCollection(document.querySelector('.nestwell-collection'));
+  });
+
+  document.addEventListener('shopify:section:load', function (event) {
+    initCollection(event.target.querySelector('.nestwell-collection'));
   });
 {% endjavascript %}

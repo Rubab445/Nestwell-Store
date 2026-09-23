@@ -33,7 +33,7 @@
   }
   .nestwell-about-cta__heading {
     margin: 0 0 32px;
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 40px;
     line-height: 48px;
     color: #ffffff;
@@ -51,7 +51,7 @@
     background: #ffffff;
     color: #171916;
     padding: 16px 32px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     letter-spacing: 0.1em;
     font-weight: 600;
@@ -66,49 +66,7 @@
     font-size: 6px;
   }
 
-  .observe-fade-up {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .observe-fade-up.is-visible {
-    opacity: 1;
-    transform: none;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .observe-fade-up {
-      transition: none;
-      opacity: 1;
-      transform: none;
-    }
-  }
+  
 {% endstylesheet %}
 
-{% javascript %}
-  document.addEventListener('DOMContentLoaded', function () {
-    var section = document.querySelector('.nestwell-about-cta[data-section-id]');
-    if (!section) return;
 
-    var target = section.querySelector('.observe-fade-up');
-    if (!target) return;
-
-    if (!('IntersectionObserver' in window)) {
-      target.classList.add('is-visible');
-      return;
-    }
-
-    var observer = new IntersectionObserver(
-      function (entries, obs) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(target);
-  });
-{% endjavascript %}

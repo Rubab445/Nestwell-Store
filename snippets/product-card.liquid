@@ -20,7 +20,7 @@
 <div class="product-card{% unless has_hover_image %} product-card--single-image{% endunless %}">
   <div class="product-card__media-wrap">
     {%- if product.tags contains 'New' -%}
-      <span class="product-card__badge">New</span>
+      <span class="product-card__badge">{{ 'nestwell.product.new_badge' | t }}</span>
     {%- endif -%}
 
     <a href="{{ product.url }}" class="product-card__media-link" aria-label="{{ product.title | escape }}">
@@ -72,7 +72,7 @@
             data-quick-add-btn
           >
             <span class="product-card__quick-add-text">Quick Add</span>
-            <span class="material-symbols-outlined product-card__quick-add-icon" hidden>check</span>
+            <span class="product-card__quick-add-icon" hidden>{{- 'icon-checkmark.svg' | inline_asset_content -}}</span>
           </button>
         {%- endform -%}
       {%- elsif product.available -%}
@@ -80,7 +80,7 @@
           <span class="product-card__quick-add-text">Select Options</span>
         </a>
       {%- else -%}
-        <span class="product-card__quick-add-btn product-card__quick-add-btn--soldout"> Sold Out </span>
+        <span class="product-card__quick-add-btn product-card__quick-add-btn--soldout"> {{ 'nestwell.product.sold_out' | t }} </span>
       {%- endif -%}
     </div>
   </div>

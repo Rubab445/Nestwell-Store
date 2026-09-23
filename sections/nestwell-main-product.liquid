@@ -8,7 +8,7 @@
         assign breadcrumb_collection = collection
         if breadcrumb_collection == blank
           for c in product.collections
-            unless c.title == 'Automated Collection'
+            unless section.settings.breadcrumb_excluded_collection and c.id == section.settings.breadcrumb_excluded_collection.id
               assign breadcrumb_collection = c
               break
             endunless
@@ -38,7 +38,7 @@
               class="nestwell-product__thumb{% if forloop.first %} nestwell-product__thumb--active{% endif %}"
               data-thumb
               data-media-id="{{ media.id }}"
-              aria-label="Show image {{ forloop.index }}"
+              aria-label=" {{ 'nestwell.product.show_image' | t: index: forloop.index }}"
             >
               <img
                 src="{{ media | image_url: width: 160 }}"
@@ -54,24 +54,38 @@
 
       <div class="nestwell-product__main-image-wrap" data-main-image-wrap>
         {%- for media in product.media -%}
-          <img
-            src="{{ media | image_url: width: 1000 }}"
-            srcset="
-              {{ media | image_url: width: 500 }} 500w,
-              {{ media | image_url: width: 800 }} 800w,
-              {{ media | image_url: width: 1000 }} 1000w
-            "
-            sizes="(min-width: 990px) 50vw, 100vw"
-            width="{{ media.width }}"
-            height="{{ media.height }}"
-            loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-            alt="{{ media.alt | default: product.title | escape }}"
-            class="nestwell-product__main-image{% if forloop.first %} nestwell-product__main-image--active{% endif %}"
-            data-media-id="{{ media.id }}"
-            data-main-image
-          >
-        {%- else -%}
-          <div class="nestwell-product__main-image nestwell-product__main-image--placeholder"></div>
+          {%- case media.media_type -%}
+            {%- when 'video' -%}
+              <div
+                class="nestwell-product__main-image{% if forloop.first %} nestwell-product__main-image--active{% endif %}"
+                data-media-id="{{ media.id }}"
+              >
+                {{ media | media_tag: image_size: '1000x', controls: true, preload: 'none' }}
+              </div>
+            {%- when 'external_video' -%}
+              <div
+                class="nestwell-product__main-image{% if forloop.first %} nestwell-product__main-image--active{% endif %}"
+                data-media-id="{{ media.id }}"
+              >
+                {{ media | external_video_tag: loading: 'lazy' }}
+              </div>
+            {%- else -%}
+              <img
+                src="{{ media | image_url: width: 1000 }}"
+                srcset="
+                  {{ media | image_url: width: 500 }} 500w,
+                  {{ media | image_url: width: 800 }} 800w,
+                  {{ media | image_url: width: 1000 }} 1000w
+                "
+                sizes="(min-width: 990px) 50vw, 100vw"
+                width="{{ media.width }}"
+                height="{{ media.height }}"
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                alt="{{ media.alt | default: product.title | escape }}"
+                class="nestwell-product__main-image{% if forloop.first %} nestwell-product__main-image--active{% endif %}"
+                data-media-id="{{ media.id }}"
+              >
+          {%- endcase -%}
         {%- endfor -%}
       </div>
     </div>
@@ -106,7 +120,22 @@
       {%- if product.has_only_default_variant == false -%}
         <variant-selector class="nestwell-product__variant-selector" data-variant-selector>
           <script type="application/json" data-variant-json>
-            {{ product.variants | json }}
+            [
+              {%- for variant in product.variants -%}
+                {
+                  "id": {{ variant.id }},
+                  "option1": {{ variant.option1 | json }},
+                  "option2": {{ variant.option2 | json }},
+                  "option3": {{ variant.option3 | json }},
+                  "available": {{ variant.available | json }},
+                  "price": {{ variant.price }},
+                  "price_formatted": {{ variant.price | money | json }},
+                  "compare_at_price": {{ variant.compare_at_price | json }},
+                  "compare_at_price_formatted": {{ variant.compare_at_price | money | json }},
+                  "featured_media": {{ variant.featured_media | json }}
+                }{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            ]
           </script>
 
           {%- for option in product.options_with_values -%}
@@ -128,10 +157,14 @@
                     aria-label="{{ value }}"
                   >
                     <span class="nestwell-product__swatch-ring"></span>
-                    <span
-                      class="nestwell-product__swatch-color"
-                      style="background-color: {% render 'swatch-color', value: value %};"
-                    ></span>
+                    {%- if value.swatch.color or value.swatch.image -%}
+                      <span
+                        class="nestwell-product__swatch-color"
+                        style="background-color: {% render 'swatch-color', value: value %};"
+                      ></span>
+                    {%- else -%}
+                      <span class="nestwell-product__swatch-text">{{ value }}</span>
+                    {%- endif -%}
                   </button>
                 {%- endfor -%}
               </div>
@@ -154,7 +187,7 @@
               type="button"
               class="nestwell-product__qty-btn"
               data-qty-action="decrease"
-              aria-label="Decrease quantity"
+              aria-label="{{ 'nestwell.product.decrease_quantity' | t }}"
             >
               −
             </button>
@@ -163,7 +196,7 @@
               type="button"
               class="nestwell-product__qty-btn"
               data-qty-action="increase"
-              aria-label="Increase quantity"
+              aria-label="{{ 'nestwell.product.increase_quantity' | t }}"
             >
               +
             </button>
@@ -178,9 +211,9 @@
           >
             <span data-add-to-cart-text>
               {%- if product.selected_or_first_available_variant.available -%}
-                Add to Cart
+                {{ 'nestwell.product.add_to_cart' | t }}
               {%- else -%}
-                Sold Out
+                {{ 'nestwell.product.sold_out' | t }}
               {%- endif -%}
             </span>
           </button>
@@ -255,11 +288,10 @@
       <h2 class="nestwell-product__related-title">Curated Pairings</h2>
       <a href="{{ routes.collections_url }}" class="nestwell-product__related-link">Shop All</a>
     </div>
-    <product-recommendations
-      class="nestwell-product__related-grid-wrap"
+    <nestwell-product-recommendations
       data-url="{{ routes.product_recommendations_url }}?section_id=nestwell-product-recommendations&product_id={{ product.id }}&limit=4"
       data-section-id="{{ section.id }}"
-    ></product-recommendations>
+    ></nestwell-product-recommendations>
   </section>
 </div>
 
@@ -270,7 +302,32 @@
 {% schema %}
 {
   "name": "Nestwell Product",
-  "settings": []
+  "settings": [
+    {
+      "type": "collection",
+      "id": "breadcrumb_excluded_collection",
+      "label": "Collection to hide from breadcrumbs",
+      "info": "If a product belongs to this collection and no other, it won't be used in the breadcrumb trail."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show SKU",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor/brand",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "sale_badge_color",
+      "label": "Sale badge color",
+      "default": "#C0392B"
+    }
+  ]
 }
 {% endschema %}
 
@@ -295,7 +352,7 @@
     list-style: none;
     margin: 0 0 48px;
     padding: 30px 0 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -402,7 +459,7 @@
 
   .nestwell-product__category {
     display: block;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -413,7 +470,7 @@
 
   .nestwell-product__title {
     margin: 0 0 16px;
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 40px;
     line-height: 48px;
     color: #171916;
@@ -427,7 +484,7 @@
   }
 
   .nestwell-product__price {
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 24px;
     margin-bottom: 32px;
     color: #171916;
@@ -445,7 +502,7 @@
   }
 
   .nestwell-product__description {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 18px;
     line-height: 28px;
     color: #454842;
@@ -460,7 +517,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 16px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
   }
 
   .nestwell-product__option-name {
@@ -541,7 +598,7 @@
     border: none;
     background: none;
     text-align: center;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     color: #171916;
   }
 
@@ -550,7 +607,7 @@
     background: #171916;
     color: #ffffff;
     border: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -584,7 +641,7 @@
     border: none;
     cursor: pointer;
     padding: 24px 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -600,7 +657,7 @@
 
   .nestwell-product__accordion-inner {
     overflow: hidden;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 16px;
     line-height: 24px;
     color: #454842;
@@ -638,13 +695,13 @@
   }
 
   .nestwell-product__related-title {
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 32px;
     color: #171916;
     margin: 0;
   }
   .nestwell-product__related-link {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -674,4 +731,3 @@
 {% endstylesheet %}
 
 <script src="{{ 'nestwell-main-product.js' | asset_url }}" defer></script>
-

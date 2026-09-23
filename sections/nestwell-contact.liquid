@@ -42,12 +42,13 @@
                   type="text"
                   id="ContactFormName"
                   name="contact[name]"
-                  placeholder="Name"
+                  placeholder="{{ 'nestwell.contact.name_placeholder' | t }}"
                   value="{%- if form.name -%}{{ form.name }}{%- elsif customer -%}{{ customer.name }}{%- endif -%}"
                   autocomplete="off"
                   required
                 >
-                <label class="nestwell-contact__label" for="ContactFormName">Name</label>
+                id="ContactFormName-{{ section.id }}"
+                <label class="nestwell-contact__label" for="ContactFormName-{{ section.id }}">Name</label>
               </div>
               <div class="nestwell-contact__field">
                 <input
@@ -55,13 +56,14 @@
                   type="email"
                   id="ContactFormEmail"
                   name="contact[email]"
-                  placeholder="Email Address"
+                  placeholder="{{ 'nestwell.contact.email_placeholder' | t }}"
                   value="{%- if form.email -%}{{ form.email }}{%- elsif customer -%}{{ customer.email }}{%- endif -%}"
                   autocomplete="email"
                   autocapitalize="off"
                   required
                 >
-                <label class="nestwell-contact__label" for="ContactFormEmail">Email Address</label>
+                id="ContactFormEmail-{{ section.id }}"
+                <label class="nestwell-contact__label" for="ContactFormEmail-{{ section.id }}">Email Address</label>
               </div>
             </div>
 
@@ -71,11 +73,12 @@
                 type="text"
                 id="ContactFormSubject"
                 name="contact[subject]"
-                placeholder="Subject"
+                placeholder="{{ 'nestwell.contact.subject_placeholder' | t }}"
                 value="{%- if form.subject -%}{{ form.subject }}{%- endif -%}"
                 autocomplete="off"
               >
-              <label class="nestwell-contact__label" for="ContactFormSubject">Subject</label>
+              id="ContactFormSubject-{{ section.id }}"
+              <label class="nestwell-contact__label" for="ContactFormSubject-{{ section.id }}">Subject</label>
             </div>
 
             <div class="nestwell-contact__field">
@@ -83,15 +86,16 @@
                 class="nestwell-contact__input nestwell-contact__textarea"
                 id="ContactFormMessage"
                 name="contact[body]"
-                placeholder="Message"
+                placeholder="{{ 'nestwell.contact.message_placeholder' | t }}"
                 rows="4"
                 required
               >{%- if form.body -%}{{ form.body }}{%- endif -%}</textarea>
-              <label class="nestwell-contact__label" for="ContactFormMessage">Message</label>
+              id="ContactFormMessage-{{ section.id }}"
+              <label class="nestwell-contact__label" for="ContactFormMessage-{{ section.id }}">Message</label>
             </div>
 
             <button type="submit" class="nestwell-contact__submit">
-              <span class="nestwell-contact__submit-text">Send Message</span>
+              <span class="nestwell-contact__submit-text">{{ 'nestwell.contact.send_message' | t }}</span>
             </button>
           </div>
         {%- endif -%}
@@ -131,10 +135,14 @@
               <h3 class="nestwell-contact__info-heading">Direct</h3>
               <p class="nestwell-contact__info-text">
                 {%- if section.settings.store_phone != blank -%}
-                  class="nestwell-contact__info-link" href="tel:
-                  {{- section.settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | escape -}}
-                  " >
-                  {{- section.settings.store_phone | escape -}}
+                  <a
+                    class="nestwell-contact__info-link"
+                    href="
+                      tel:
+                      {{- section.settings.store_phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | escape -}}
+                    "
+                  >
+                    {{- section.settings.store_phone | escape -}}
                   </a>
                 {%- endif -%}
                 {%- if section.settings.store_email != blank -%}
@@ -157,10 +165,17 @@
                 | replace: '<br />', ', '
                 | strip_newlines
               -%}
-
-              class="nestwell-contact__directions" href="https://www.google.com/maps/dir/?api=1&destination=
-              {{- directions_address | url_encode -}}
-              " target="_blank" rel="noopener" > Get Directions <span class="nestwell-contact__directions-icon">↗</span>
+              <a
+                class="nestwell-contact__directions"
+                href="
+                  https://www.google.com/maps/dir/?api=1&destination=
+                  {{- directions_address | url_encode -}}
+                "
+                target="_blank"
+                rel="noopener"
+              >
+                {{ 'nestwell.contact.get_directions' | t }}
+                <span class="nestwell-contact__directions-icon">↗</span>
               </a>
             {%- endif -%}
           </div>
@@ -223,7 +238,7 @@
   }
 
   .nestwell-contact__title {
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 40px;
     line-height: 48px;
     color: #171916;
@@ -237,7 +252,7 @@
     }
   }
   .nestwell-contact__subtitle {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 18px;
     line-height: 28px;
     color: #454842;
@@ -273,7 +288,7 @@
     border: none;
     border-bottom: 1px solid #c6c7c0;
     padding: 12px 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 16px;
     color: #171916;
     transition: border-color 0.2s ease;
@@ -298,7 +313,7 @@
     position: absolute;
     left: 0;
     top: 12px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 16px;
     color: #454842;
     pointer-events: none;
@@ -318,7 +333,7 @@
     align-self: flex-start;
     background: #171916;
     color: #fff;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     letter-spacing: 0.1em;
     font-weight: 600;
@@ -336,7 +351,7 @@
     margin-top: 48px;
     padding: 24px;
     background: #f4f3f1;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     color: #171916;
   }
   .nestwell-contact__errors {
@@ -344,7 +359,7 @@
     padding: 16px 20px;
     background: #ffdad6;
     color: #ba1a1a;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 14px;
   }
   .nestwell-contact__errors ul {
@@ -370,7 +385,7 @@
     }
   }
   .nestwell-contact__info-heading {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     letter-spacing: 0.1em;
     font-weight: 600;
@@ -379,7 +394,7 @@
     margin: 0 0 16px;
   }
   .nestwell-contact__info-text {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 18px;
     line-height: 28px;
     color: #454842;
@@ -401,7 +416,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     color: #454842;
   }
   .nestwell-contact__hours li {
@@ -428,7 +443,7 @@
     right: 16px;
     background: #faf9f7;
     color: #171916;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 12px;
     letter-spacing: 0.1em;
     font-weight: 600;
@@ -457,13 +472,13 @@
     margin-bottom: 64px;
   }
   .nestwell-faq__title {
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 40px;
     color: #171916;
     margin: 0 0 16px;
   }
   .nestwell-faq__subtitle {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     font-size: 18px;
     color: #454842;
     max-width: 36rem;
@@ -485,7 +500,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 24px 0;
-    font-family: 'EB Garamond', serif;
+    font-family: var(--font-heading-family);
     font-size: 24px;
     color: #171916;
   }
@@ -511,7 +526,7 @@
   .nestwell-faq__answer p {
     padding-bottom: 24px;
     margin: 0;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body-family);
     color: #454842;
     max-width: 80rem;
   }
