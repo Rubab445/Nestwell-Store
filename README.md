@@ -18,7 +18,7 @@ Password: (Password available on request)
 ## Custom sections
 
 - `nestwell-header` — sticky/scroll-shrink header, mobile nav drawer with focus trapping
-- `nestwell-hero` — homepage hero with scroll-in animation
+- `nestwell-hero` — homepage hero with load-in animation
 - `nestwell-footer`
 - `nestwell-main-product` — product gallery, variant/swatch selector, add-to-cart
 - `nestwell-about-hero`, `nestwell-about-story`, `nestwell-about-values`, `nestwell-about-gallery`, `nestwell-about-cta`
