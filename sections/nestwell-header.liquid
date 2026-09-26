@@ -6,7 +6,12 @@
 
 <header class="nestwell-header">
   <div class="nestwell-header__container">
-    <button class="nestwell-header__menu-btn" aria-label="{{ 'nestwell.general.menu' | t }}" aria-expanded="false" aria-controls="header-mobile-nav">
+    <button
+      class="nestwell-header__menu-btn"
+      aria-label="{{ 'nestwell.general.menu' | t }}"
+      aria-expanded="false"
+      aria-controls="header-mobile-nav"
+    >
       <span class="nestwell-header__menu-icon"></span>
     </button>
 
@@ -29,12 +34,16 @@
       <nav class="nestwell-header__nav" aria-label="{{ 'nestwell.general.main_menu' | t }}">
         {%- for link in menu.links -%}
           {%- assign link_title_downcase = link.title | downcase | strip -%}
-          <a href="{{ link.url }}" class="nestwell-header__nav-link
+          <a
+            href="{{ link.url }}"
+            class="
+              nestwell-header__nav-link
               {% if link_title_downcase == 'sale' %} nestwell-header__nav-link--sale{% endif %}
-              {% if link.active %} nestwell-header__nav-link--active{% endif %}"
-              {% if link.active %}
-                aria-current="page"
-              {% endif %}
+              {% if link.active %} nestwell-header__nav-link--active{% endif %}
+            "
+            {% if link.active %}
+              aria-current="page"
+            {% endif %}
           >
             {{ link.title | escape }}
           </a>
@@ -73,7 +82,11 @@
       hidden
     >
       <div class="nestwell-header__drawer-top">
-        <button class="nestwell-header__drawer-close" data-drawer-close aria-label="{{ 'nestwell.general.close_menu' | t }}">
+        <button
+          class="nestwell-header__drawer-close"
+          data-drawer-close
+          aria-label="{{ 'nestwell.general.close_menu' | t }}"
+        >
           {% render 'icon-close' %}
         </button>
       </div>
@@ -105,7 +118,8 @@
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 50;
+    z-index: 999;
+    isolation: isolate;
     background: rgba(var(--nestwell-surface), 0.9);
     backdrop-filter: blur(8px);
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
