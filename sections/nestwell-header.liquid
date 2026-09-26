@@ -382,7 +382,7 @@
 {% endstylesheet %}
 
 {% javascript %}
-  document.addEventListener('DOMContentLoaded', () => {
+  function initNestwellHeader() {
     const header = document.querySelector('.nestwell-header');
     const spacer = document.querySelector('.nestwell-header__spacer');
     const drawer = document.getElementById('header-mobile-nav');
@@ -406,25 +406,6 @@
         }
         updateSpacer();
       }
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      window.addEventListener('resize', updateSpacer);
-      handleScroll();
-      updateSpacer();
-    }
-    // Scroll-shrink state
-    if (header) {
-      const SCROLL_THRESHOLD = 40;
-      let isScrolled = window.scrollY > SCROLL_THRESHOLD;
-
-      function handleScroll() {
-        const shouldBeScrolled = window.scrollY > SCROLL_THRESHOLD;
-        if (shouldBeScrolled !== isScrolled) {
-          isScrolled = shouldBeScrolled;
-          header.classList.toggle('nestwell-header--scrolled', isScrolled);
-          updateSpacer();
-        }
-      }
-
       window.addEventListener('scroll', handleScroll, { passive: true });
       window.addEventListener('resize', updateSpacer);
       handleScroll();
@@ -513,6 +494,13 @@
     }
 
     document.addEventListener('cart:updated', updateCartBadge);
+  }
+
+  document.addEventListener('DOMContentLoaded', initNestwellHeader);
+  document.addEventListener('shopify:section:load', function (event) {
+    if (event.target.querySelector('.nestwell-header')) {
+      initNestwellHeader();
+    }
   });
 {% endjavascript %}
 

@@ -1,5 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
-  var root = document.querySelector(".nestwell-product");
+function initNestwellProduct(root) {
   if (!root) return;
 
   // ---------- Gallery: thumbnail click swaps main image ----------
@@ -254,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ---------- Product recommendations fetch ----------
-  var recWrap = root.querySelector('nestwell-product-recommendations');
+  var recWrap = root.querySelector("nestwell-product-recommendations");
   if (recWrap) {
     var url = recWrap.getAttribute("data-url");
     fetch(url)
@@ -276,4 +275,13 @@ document.addEventListener("DOMContentLoaded", function () {
         recWrap.remove();
       });
   }
+}
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".nestwell-product").forEach(initNestwellProduct);
+});
+document.addEventListener("shopify:section:load", function (event) {
+  var root =
+    event.target.querySelector(".nestwell-product") ||
+    (event.target.classList.contains("nestwell-product") ? event.target : null);
+  if (root) initNestwellProduct(root);
 });
