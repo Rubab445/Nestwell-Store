@@ -40,21 +40,20 @@
                 <input
                   class="nestwell-contact__input"
                   type="text"
-                  id="ContactFormName"
+                  id="ContactFormName-{{ section.id }}"
                   name="contact[name]"
                   placeholder="{{ 'nestwell.contact.name_placeholder' | t }}"
                   value="{%- if form.name -%}{{ form.name }}{%- elsif customer -%}{{ customer.name }}{%- endif -%}"
                   autocomplete="off"
                   required
                 >
-                id="ContactFormName-{{ section.id }}"
                 <label class="nestwell-contact__label" for="ContactFormName-{{ section.id }}">Name</label>
               </div>
               <div class="nestwell-contact__field">
                 <input
                   class="nestwell-contact__input"
                   type="email"
-                  id="ContactFormEmail"
+                  id="ContactFormEmail-{{ section.id }}"
                   name="contact[email]"
                   placeholder="{{ 'nestwell.contact.email_placeholder' | t }}"
                   value="{%- if form.email -%}{{ form.email }}{%- elsif customer -%}{{ customer.email }}{%- endif -%}"
@@ -62,7 +61,6 @@
                   autocapitalize="off"
                   required
                 >
-                id="ContactFormEmail-{{ section.id }}"
                 <label class="nestwell-contact__label" for="ContactFormEmail-{{ section.id }}">Email Address</label>
               </div>
             </div>
@@ -71,26 +69,24 @@
               <input
                 class="nestwell-contact__input"
                 type="text"
-                id="ContactFormSubject"
+                id="ContactFormSubject-{{ section.id }}"
                 name="contact[subject]"
                 placeholder="{{ 'nestwell.contact.subject_placeholder' | t }}"
                 value="{%- if form.subject -%}{{ form.subject }}{%- endif -%}"
                 autocomplete="off"
               >
-              id="ContactFormSubject-{{ section.id }}"
               <label class="nestwell-contact__label" for="ContactFormSubject-{{ section.id }}">Subject</label>
             </div>
 
             <div class="nestwell-contact__field">
               <textarea
                 class="nestwell-contact__input nestwell-contact__textarea"
-                id="ContactFormMessage"
+                id="ContactFormMessage-{{ section.id }}"
                 name="contact[body]"
                 placeholder="{{ 'nestwell.contact.message_placeholder' | t }}"
                 rows="4"
                 required
               >{%- if form.body -%}{{ form.body }}{%- endif -%}</textarea>
-              id="ContactFormMessage-{{ section.id }}"
               <label class="nestwell-contact__label" for="ContactFormMessage-{{ section.id }}">Message</label>
             </div>
 
@@ -538,6 +534,8 @@
     if (!toggle) return;
 
     var accordion = toggle.closest('[data-faq-accordion]');
+    if (!accordion) return;
+
     var isOpen = toggle.getAttribute('aria-expanded') === 'true';
 
     accordion.querySelectorAll('[data-faq-toggle]').forEach(function (btn) {
