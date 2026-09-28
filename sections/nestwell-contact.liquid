@@ -113,12 +113,15 @@
             <div class="nestwell-contact__info-block">
               <h3 class="nestwell-contact__info-heading">Hours</h3>
               <ul class="nestwell-contact__hours">
-                {%- assign hour_lines = section.settings.store_hours | split: newline -%}
+                {%- assign hour_lines = section.settings.store_hours | newline_to_br | split: '<br />' -%}
                 {%- for line in hour_lines -%}
-                  {%- assign parts = line | split: ':' -%}
-                  {%- if parts.size == 2 -%}
+                  {%- assign line = line | strip -%}
+                  {%- if line contains ':' -%}
+                    {%- assign parts = line | split: ':' -%}
+                    {%- assign label = parts | first -%}
+                    {%- assign hours = line | remove_first: label | remove_first: ':' -%}
                     <li>
-                      <span>{{ parts[0] | strip | escape }}</span><span>{{ parts[1] | strip | escape }}</span>
+                      <span>{{ label | strip | escape }}</span><span>{{ hours | strip | escape }}</span>
                     </li>
                   {%- endif -%}
                 {%- endfor -%}
